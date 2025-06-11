@@ -1,0 +1,3 @@
+- [] Create a snake body
+- [] Move the snake
+- [] Create snake food

@@ -1,0 +1,4 @@
+- [] Detect collision with food
+- [] Create a scoreboard
+- [] Detect collision with wall
+- [] Detect collision with tail
