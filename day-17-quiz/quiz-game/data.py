@@ -1,3 +1,10 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+# ファイル名: data.py
+# 目的: クイズゲームで使用される質問データを定義する。
+#       各質問は辞書のリストとして格納されており、"text" (質問文) と "answer" (正解) を含む。
+
 question_data = [
 {"text": "A slug's blood is green.", "answer": "True"},
 {"text": "The loudest animal is the African Elephant.", "answer": "False"},
