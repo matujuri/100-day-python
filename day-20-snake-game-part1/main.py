@@ -1,55 +1,29 @@
-from turtle import Screen, Turtle
+from turtle import Screen
 import time
+from snake import Snake
 
-# 画面の設定
-screen = Screen()
-screen.setup(width=600, height=600)
-screen.bgcolor("black")
-screen.title("Snake Game")
-screen.tracer(0) # 画面の自動更新を無効化
+# 画面のセットアップ
+screen = Screen()  # Screenオブジェクトを作成
+screen.setup(width=600, height=600)  # 画面のサイズを設定
+screen.bgcolor("black")  # 背景色を黒に設定
+screen.title("Snake Game")  # 画面のタイトルを設定
+screen.tracer(0)  # 画面の自動更新を無効化（手動で更新するため）
 
 # 蛇の初期化
-snake_segments = []
-positions = [(0, 0), (-20, 0), (-40, 0)]
-for position in positions:
-    new_segment = Turtle(shape="square")
-    new_segment.color("white")
-    new_segment.penup()
-    new_segment.goto(position)
-    snake_segments.append(new_segment)
+snake = Snake()  # Snakeクラスの新しいインスタンスを作成
 
-# 入力に応じて蛇の向きを変える関数（逆方向には向けない）
-def move_up():
-    if snake_segments[0].heading() != 270:
-        snake_segments[0].setheading(90)
-def move_down():
-    if snake_segments[0].heading() != 90:
-        snake_segments[0].setheading(270)
-def move_left():
-    if snake_segments[0].heading() != 0:
-        snake_segments[0].setheading(180)
-def move_right():
-    if snake_segments[0].heading() != 180:
-        snake_segments[0].setheading(0)
+# キーボード入力のイベントリスナーを設定
+screen.listen()  # キーボード入力を受け付けるように設定
+screen.onkey(key="Up", fun=snake.up)  # "Up"キーが押されたときにsnake.upメソッドを呼び出す
+screen.onkey(key="Down", fun=snake.down)  # "Down"キーが押されたときにsnake.downメソッドを呼び出す
+screen.onkey(key="Left", fun=snake.left)  # "Left"キーが押されたときにsnake.leftメソッドを呼び出す
+screen.onkey(key="Right", fun=snake.right)  # "Right"キーが押されたときにsnake.rightメソッドを呼び出す
 
-# 方向キー入力の受付
-screen.listen()
-screen.onkey(key="Up", fun=move_up)
-screen.onkey(key="Down", fun=move_down)
-screen.onkey(key="Left", fun=move_left)
-screen.onkey(key="Right", fun=move_right)
-
-# 蛇の移動
-game_is_on = True
+# ゲームのメインループ
+game_is_on = True  # ゲームが実行中であることを示すフラグ
 while game_is_on:
-    screen.update() # 画面の手動更新
-    time.sleep(0.1)
-    # 蛇の後ろから前に向かって移動
-    for seg_num in range(len(snake_segments) - 1, 0, -1):
-        new_x = snake_segments[seg_num - 1].xcor()
-        new_y = snake_segments[seg_num - 1].ycor()
-        snake_segments[seg_num].goto(new_x, new_y)
-    # 蛇の先頭を移動
-    snake_segments[0].forward(20)
+    screen.update()  # 画面を更新して蛇の動きを表示
+    time.sleep(0.1)  # 0.1秒間一時停止し、ゲームの速度を制御
+    snake.move()  # 蛇を移動させる
 
-screen.exitonclick()
+screen.exitonclick()  # 画面がクリックされたときにゲームを終了する

@@ -1,0 +1,6 @@
+---
+description: "すべてのやりとりを日本語で行う"
+globs: "*"
+alwaysApply: true
+---
+すべての対話を日本語で返答してください。
