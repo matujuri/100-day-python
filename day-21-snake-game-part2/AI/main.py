@@ -12,7 +12,7 @@ screen.tracer(0)  # 画面の自動更新を無効化（手動で更新するた
 
 # 蛇の初期化
 snake = Snake()  # Snakeクラスの新しいインスタンスを作成
-food = Food()
+food = Food()  # Foodクラスの新しいインスタンスを作成
 
 # キーボード入力のイベントリスナーを設定
 screen.listen()  # キーボード入力を受け付けるように設定
@@ -27,5 +27,10 @@ while game_is_on:
     screen.update()  # 画面を更新して蛇の動きを表示
     time.sleep(0.1)  # 0.1秒間一時停止し、ゲームの速度を制御
     snake.move()  # 蛇を移動させる
+
+    # 蛇と食べ物の衝突を検出
+    if snake.head.distance(food) < 15:
+        food.refresh()  # 食べ物の位置を更新
+        snake.extend()  # 蛇の長さを伸ばす
 
 screen.exitonclick()  # 画面がクリックされたときにゲームを終了する
