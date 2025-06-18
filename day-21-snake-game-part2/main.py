@@ -2,6 +2,7 @@ from turtle import Screen
 import time
 from snake import Snake
 from food import Food
+from scoreboard import Scoreboard
 
 # 画面のセットアップ
 screen = Screen()  # Screenオブジェクトを作成
@@ -13,6 +14,7 @@ screen.tracer(0)  # 画面の自動更新を無効化（手動で更新するた
 # 蛇の初期化
 snake = Snake()  # Snakeクラスの新しいインスタンスを作成
 food = Food()
+scoreboard = Scoreboard()
 
 # キーボード入力のイベントリスナーを設定
 screen.listen()  # キーボード入力を受け付けるように設定
@@ -27,5 +29,9 @@ while game_is_on:
     screen.update()  # 画面を更新して蛇の動きを表示
     time.sleep(0.1)  # 0.1秒間一時停止し、ゲームの速度を制御
     snake.move()  # 蛇を移動させる
+    
+    if snake.head.distance(food) < 15:
+        food.refresh()
+        scoreboard.increase_score()
 
 screen.exitonclick()  # 画面がクリックされたときにゲームを終了する
