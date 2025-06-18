@@ -69,6 +69,15 @@ while game_continues:
             # ゲームオーバー時のみy/nキーをバインド
             screen.onkey(restart_game, "y")
             screen.onkey(exit_game, "n")
+            
+        # 自身の体との衝突を検出
+        for segment in snake.segments[1:]:
+            if snake.head.distance(segment) < 10:
+                game_is_on = False
+                scoreboard.game_over()
+                # ゲームオーバー時のみy/nキーをバインド
+                screen.onkey(restart_game, "y")
+                screen.onkey(exit_game, "n")
     
     # game_is_on が False になったら、ゲームループを一時停止し、ユーザーのy/n入力を待機
     # screen.exitonclick() が screen.mainloop() と同じようにイベントループに入るため、
