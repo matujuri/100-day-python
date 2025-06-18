@@ -21,6 +21,15 @@ class Scoreboard(Turtle):
     def game_over(self):
         self.goto(0, 0)
         self.write("GAME OVER", align=ALIGNMENT, font=FONT)
+        # ゲームオーバー時に再プレイの選択肢を表示
+        self.goto(0, -50)
+        self.write("Press 'y' to play again, 'n' to exit.", align=ALIGNMENT, font=FONT)
+
+    # スコアボードをリセットするメソッド
+    def reset_scoreboard(self):
+        self.score = 0
+        self.goto(0, 270)
+        self.update_scoreboard()
         
     def increase_score(self):
         self.score += 1
