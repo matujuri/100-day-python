@@ -15,8 +15,15 @@ writer.penup()
 writer.hideturtle()
 
 guessed_states = []
+states_to_learn = []
 while len(guessed_states) < 50:
-    input_state = screen.textinput(title=f"{len(guessed_states)}/50 Guess the State", prompt="What's another state's name?")
+    input_state = screen.textinput(title=f"{len(guessed_states)}/50 Guess the State", prompt="What's another state's name? Type 'exit' to finish the game.")
+    if input_state.title() == "Exit":
+        for state in data.state.values:
+            if state not in guessed_states:
+                states_to_learn.append(state)
+        pd.DataFrame(states_to_learn).to_csv("states_to_learn.csv")
+        break
 
     if input_state.title() in data.state.values:
         writer.goto(data[data.state == input_state.title()].x.item(), data[data.state == input_state.title()].y.item())
