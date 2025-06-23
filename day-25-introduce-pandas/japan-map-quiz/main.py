@@ -5,7 +5,7 @@ import time
 screen = Screen()
 screen.title("Japan Map Quiz")
 screen.setup(width=1200, height=1250)
-screen.bgpic("japan_map.gif")
+screen.bgpic("japan_blank.gif")
 
 data = pd.read_csv("47_todofuken.csv")
 writer = Turtle()
@@ -37,6 +37,6 @@ while len(guessed_todofuken) < 47:
 
 if len(guessed_todofuken) == 47:
     writer.goto(0, 0)
-    writer.write("Congratulations! You've guessed all 47 prefectures!", align="center", font=("Arial", 20, "bold"))
+    writer.write("おめでとうございます！あなたはすべての都道府県を当てました！", align="center", font=("Arial", 20, "bold"))
 
 screen.exitonclick()
