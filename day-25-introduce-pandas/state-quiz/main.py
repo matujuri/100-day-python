@@ -4,10 +4,7 @@ import pandas as pd
 screen = Screen()
 screen.title("U.S. States Game")
 screen.setup(width=725, height=491)
-image = "blank_states_img.gif"
-screen.addshape(image)
-t = Turtle()
-t.shape(image)
+screen.bgpic("blank_states_img.gif")
 
 data = pd.read_csv("50_states.csv")
 writer = Turtle()

@@ -5,10 +5,7 @@ import time
 screen = Screen()
 screen.title("Japan Map Quiz")
 screen.setup(width=1200, height=1250)
-image = "japan_map.gif"
-screen.addshape(image)
-t = Turtle()
-t.shape(image)
+screen.bgpic("japan_map.gif")
 
 data = pd.read_csv("47_todofuken.csv")
 writer = Turtle()
