@@ -1,5 +1,6 @@
 from turtle import Turtle, Screen
 import pandas as pd
+import time
 
 screen = Screen()
 screen.title("Japan Map Quiz")
@@ -22,7 +23,7 @@ while len(guessed_todofuken) < 47:
         for todofuken in data.日本語名.values:
             if todofuken not in guessed_todofuken:
                 todofuken_to_learn.append([todofuken, data[data.日本語名 == todofuken].英語名.item()])
-        pd.DataFrame(todofuken_to_learn).to_csv("todofuken_to_learn.csv")
+        pd.DataFrame(todofuken_to_learn).to_csv(f"todofuken_to_learn_{time.strftime('%Y%m%d_%H%M%S')}.csv")
         break
 
     if input_todofuken in data.日本語名.values:
@@ -36,5 +37,9 @@ while len(guessed_todofuken) < 47:
         writer.goto(todofuken_data.x.item(), todofuken_data.y.item())
         writer.write(todofuken_data.日本語名.item())
         guessed_todofuken.append(todofuken_data.日本語名.item())
+
+if len(guessed_todofuken) == 47:
+    writer.goto(0, 0)
+    writer.write("Congratulations! You've guessed all 47 prefectures!", align="center", font=("Arial", 20, "bold"))
 
 screen.exitonclick()
