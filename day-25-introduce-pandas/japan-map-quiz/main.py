@@ -17,9 +17,7 @@ todofuken_to_learn = []
 while len(guessed_todofuken) < 47:
     input_todofuken = screen.textinput(title=f"{len(guessed_todofuken)}/47 都道府県名を当てるゲーム", prompt="都道府県名を入力してください。終了する場合は'exit'と入力してください。").strip().title()
     if input_todofuken.title() == "Exit":
-        for todofuken in data.日本語名.values:
-            if todofuken not in guessed_todofuken:
-                todofuken_to_learn.append([todofuken, data[data.日本語名 == todofuken].英語名.item()])
+        todofuken_to_learn = [todofuken for todofuken in data.日本語名.values if todofuken not in guessed_todofuken]
         pd.DataFrame(todofuken_to_learn).to_csv(f"todofuken_to_learn_{time.strftime('%Y%m%d_%H%M%S')}.csv")
         break
 

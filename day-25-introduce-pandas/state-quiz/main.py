@@ -1,5 +1,6 @@
 from turtle import Turtle, Screen
 import pandas as pd
+import time
 
 screen = Screen()
 screen.title("U.S. States Game")
@@ -16,10 +17,8 @@ states_to_learn = []
 while len(guessed_states) < 50:
     input_state = screen.textinput(title=f"{len(guessed_states)}/50 Guess the State", prompt="What's another state's name? Type 'exit' to finish the game.")
     if input_state.title() == "Exit":
-        for state in data.state.values:
-            if state not in guessed_states:
-                states_to_learn.append(state)
-        pd.DataFrame(states_to_learn).to_csv("states_to_learn.csv")
+        states_to_learn = [state for state in data.state.values if state not in guessed_states]
+        pd.DataFrame(states_to_learn).to_csv(f"states_to_learn_{time.strftime('%Y%m%d_%H%M%S')}.csv")
         break
 
     if input_state.title() in data.state.values:

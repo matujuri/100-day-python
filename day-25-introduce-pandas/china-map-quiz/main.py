@@ -17,9 +17,7 @@ provinces_to_learn = []
 while len(guessed_provinces) < 34:
     input_province = screen.textinput(title=f"{len(guessed_provinces)}/34 猜省份名称", prompt="输入省份名称。结束时输入'exit'。").strip().title()
     if input_province.title() == "Exit":
-        for province in data.中文名称.values:
-            if province not in guessed_provinces:
-                provinces_to_learn.append([province, data[data.中文名称 == province].英文名称.item()])
+        provinces_to_learn = [province for province in data.中文名称.values if province not in guessed_provinces]
         pd.DataFrame(provinces_to_learn).to_csv(f"provinces_to_learn_{time.strftime('%Y%m%d_%H%M%S')}.csv")
         break
 
