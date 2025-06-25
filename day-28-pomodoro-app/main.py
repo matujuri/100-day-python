@@ -45,10 +45,11 @@ def count_down(count):
     if count > 0:
         timer = window.after(1000, count_down, count - 1)
     else:
-        if reps % 2 == 1: # 完了したセッションのreps値が奇数インデックス (1, 3, 5, 7) に対応
-            # 最前面に表示
-            window.attributes('-topmost', True)
-            window.focus_force()
+        # タイマーが終了したら、最前面に表示
+        window.attributes('-topmost', True)
+        window.focus_force()
+        
+        if reps % 2 == 1: # 作業セッションが完了したら、チェックマークを表示
             check_label.config(text="✔︎" * ((reps + 1) // 2))
             
         if reps < 8:
