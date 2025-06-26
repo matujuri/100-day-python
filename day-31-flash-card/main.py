@@ -5,6 +5,7 @@ import random
 
 BACKGROUND_COLOR = "#B1DDC6"
 WHITE_COLOR = "#FFFFFF"
+BLACK_COLOR = "#000000"
 
 # ---------------------------- LOAD CARD ------------------------------- #
 with open("data/french_words.csv", "r") as file:
@@ -12,12 +13,27 @@ with open("data/french_words.csv", "r") as file:
 
 to_learn = data.to_dict(orient="records")
 
+current_card = {}
+
 # ---------------------------- BUTTONS ------------------------------- #
 
+
+def flip_card():
+    canvas.itemconfig(title_text, text="English")
+    canvas.itemconfig(title_text, fill=WHITE_COLOR)
+    canvas.itemconfig(word_text, text=current_card["English"])
+    canvas.itemconfig(word_text, fill=WHITE_COLOR)
+    canvas.itemconfig(card_image, image=card_back_img)
+
 def next_card():
+    global current_card
     current_card = random.choice(to_learn)
     canvas.itemconfig(title_text, text="French")
+    canvas.itemconfig(title_text, fill=BLACK_COLOR)
     canvas.itemconfig(word_text, text=current_card["French"])
+    canvas.itemconfig(word_text, fill=BLACK_COLOR)
+    canvas.itemconfig(card_image, image=card_front_img)
+    window.after(3000, func=flip_card)
 
 
 
@@ -30,7 +46,7 @@ window.config(padx=50, pady=50, bg=BACKGROUND_COLOR)
 canvas = Canvas(width=800, height=526, bg=BACKGROUND_COLOR, highlightthickness=0)
 card_front_img = PhotoImage(file="images/card_front.png")
 card_back_img = PhotoImage(file="images/card_back.png")
-canvas.create_image(400, 263, image=card_front_img)
+card_image = canvas.create_image(400, 263, image=card_front_img)
 title_text = canvas.create_text(400, 150, text="", font=("Arial", 40, "italic"), fill="black")
 word_text = canvas.create_text(400, 263, text="", font=("Arial", 60, "bold"), fill="black")
 canvas.grid(row=0, column=0, columnspan=2)
