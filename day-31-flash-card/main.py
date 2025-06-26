@@ -26,14 +26,15 @@ def flip_card():
     canvas.itemconfig(card_image, image=card_back_img)
 
 def next_card():
-    global current_card
+    global current_card, flip_timer
+    window.after_cancel(flip_timer) # cancel the timer if it is running
     current_card = random.choice(to_learn)
     canvas.itemconfig(title_text, text="French")
     canvas.itemconfig(title_text, fill=BLACK_COLOR)
     canvas.itemconfig(word_text, text=current_card["French"])
     canvas.itemconfig(word_text, fill=BLACK_COLOR)
     canvas.itemconfig(card_image, image=card_front_img)
-    window.after(3000, func=flip_card)
+    flip_timer = window.after(3000, func=flip_card)
 
 
 
@@ -42,6 +43,8 @@ def next_card():
 window = Tk()
 window.title("Flash Card")
 window.config(padx=50, pady=50, bg=BACKGROUND_COLOR)
+
+flip_timer = window.after(3000, func=flip_card)
 
 canvas = Canvas(width=800, height=526, bg=BACKGROUND_COLOR, highlightthickness=0)
 card_front_img = PhotoImage(file="images/card_front.png")
