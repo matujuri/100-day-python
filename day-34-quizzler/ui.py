@@ -17,7 +17,7 @@ class QuizInterface:
         self.question_text = self.canvas.create_text(
             150,
             125,
-            text=self.quiz.next_question(),
+            text="",
             fill=THEME_COLOR,
             font=("Arial", 20, "italic"),
             width=280
@@ -32,7 +32,13 @@ class QuizInterface:
         self.false_button = Button(image=false_image, highlightthickness=0, borderwidth=0, command=self.false_pressed)
         self.false_button.grid(row=2, column=1)
         
+        self.get_next_question()
+        
         self.window.mainloop()
+        
+    def get_next_question(self):
+        q_text = self.quiz.next_question()
+        self.canvas.itemconfig(self.question_text, text=q_text)
         
     def true_pressed(self):
        self.quiz.check_answer("True")
