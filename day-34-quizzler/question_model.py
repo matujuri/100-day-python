@@ -1,5 +1,8 @@
+import html
+
 class Question:
 
     def __init__(self, q_text, q_answer):
-        self.text = q_text
+        # unescape the html entities in the question text
+        self.text = html.unescape(q_text)
         self.answer = q_answer
