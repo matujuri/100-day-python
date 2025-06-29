@@ -31,7 +31,7 @@ def save_password():
     password_entry.delete(0, END) 
 
     # Save the data to a CSV file
-    with open("data.csv", "a") as data_file:
+    with open("day-29-password-manager/password.csv", "a") as data_file:
         data_file.write(f"{website},{email},{password}\n")
 
 # ---------------------------- UI SETUP ------------------------------- #
@@ -41,7 +41,7 @@ window.config(padx=20, pady=20)
 window.grid_columnconfigure(1, weight=1)
 
 canvas = Canvas(width=200, height=200)
-logo_img = PhotoImage(file="logo.png")
+logo_img = PhotoImage(file="day-29-password-manager/logo.png")
 canvas.create_image(100, 100, image=logo_img)
 canvas.grid(column=0, row=0, columnspan=3)
 

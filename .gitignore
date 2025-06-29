@@ -5,3 +5,4 @@ __pycache__/
 todofuken_to_learn*.csv
 provinces_to_learn*.csv
 .env
+password.csv
