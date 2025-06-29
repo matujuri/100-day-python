@@ -4,3 +4,4 @@ __pycache__/
 .cursor/
 todofuken_to_learn*.csv
 provinces_to_learn*.csv
+.env
