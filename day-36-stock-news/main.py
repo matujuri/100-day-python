@@ -1,5 +1,3 @@
-## STEP 1: Use https://www.alphavantage.co
-# When STOCK price increase/decreases by 5% between yesterday and the day before yesterday then print("Get News").
 import requests
 import os
 import dotenv
@@ -12,6 +10,9 @@ STOCK = "AMZN"
 COMPANY_NAME = "Amazon Inc"
 STOCK_ENDPOINT = "https://www.alphavantage.co/query"
 NEWS_ENDPOINT = "https://newsapi.org/v2/everything"
+
+## STEP 1: Use https://www.alphavantage.co
+# When STOCK price increase/decreases by 5% between yesterday and the day before yesterday then print("Get News").
 
 def get_stock_data(stock_symbol) -> list:
     alphavantage_parameters = {
@@ -59,22 +60,16 @@ def get_news(company_name: str) -> list:
     response.raise_for_status()
     data = response.json()  
 
-    articles = data["articles"]
-    return list(articles[:3])
+    return data["articles"][:3]
 
-def print_news(articles: list, change_emoji: str, percentage_change: float):
-    for article in articles:
-        print(f"{change_emoji}{percentage_change}%\nHeadline: {article['title']}\nBrief: {article['description']}\npublishedAt: {article['publishedAt']}\nurl: {article['url']}\n")
+def get_news_content(articles: list):
+    return "".join([f"Headline: {article['title']}\nBrief: {article['description']}\npublishedAt: {article['publishedAt']}\nurl: {article['url']}\n" for article in articles])
 
-## STEP 3: Use https://www.twilio.com
-# Send a seperate message with the percentage change and each article's title and description to your phone number. 
-def send_mail(news: list, change_emoji: str, percentage_change: float):
-    # ニュース記事の情報を整形します。
-    news_body = "".join([f"Headline: {article['title']}\nBrief: {article['description']}\npublishedAt: {article['publishedAt']}\nurl: {article['url']}\n" for article in news])
-    
+## STEP 3: send mail
+def send_mail(news_content: str, change_emoji: str, percentage_change: float):
     # メールの件名と本文を作成します。
     subject = f"{COMPANY_NAME}: {change_emoji}{percentage_change}%"
-    body = f"{news_body}"
+    body = f"{news_content}"
     
     # MIMETextオブジェクトを作成し、UTF-8でエンコードします。
     msg = MIMEText(body, 'plain', 'utf-8')
@@ -86,6 +81,7 @@ def send_mail(news: list, change_emoji: str, percentage_change: float):
         connection.starttls()
         connection.login(user=os.getenv("FROM_EMAIL"), password=os.getenv("GMAIL_APP_PASSWORD"))
         connection.send_message(msg)
+        print("Mail sent")
 
 def main():
     stock_data = get_stock_data(STOCK)
@@ -94,24 +90,13 @@ def main():
     if percentage_change > 5 or percentage_change < -5:
         change_emoji = get_change_emoji(percentage_change)
         news = get_news(COMPANY_NAME)
-        print_news(news, change_emoji, percentage_change)
-        send_mail(news, change_emoji, percentage_change)
+        news_content = get_news_content(news)
+        send_mail(news_content, change_emoji, percentage_change)
     else:
         print("No news")
         change_emoji = get_change_emoji(percentage_change)
         news = get_news(COMPANY_NAME)
-        send_mail(news, change_emoji, percentage_change)
+        news_content = get_news_content(news)
+        send_mail(news_content, change_emoji, percentage_change)
         
 main()
-
-#Optional: Format the SMS message like this: 
-"""
-TSLA: 🔺2%
-Headline: Were Hedge Funds Right About Piling Into Tesla Inc. (TSLA)?. 
-Brief: We at Insider Monkey have gone over 821 13F filings that hedge funds and prominent investors are required to file by the SEC The 13F filings show the funds' and investors' portfolio positions as of March 31st, near the height of the coronavirus market crash.
-or
-"TSLA: 🔻5%
-Headline: Were Hedge Funds Right About Piling Into Tesla Inc. (TSLA)?. 
-Brief: We at Insider Monkey have gone over 821 13F filings that hedge funds and prominent investors are required to file by the SEC The 13F filings show the funds' and investors' portfolio positions as of March 31st, near the height of the coronavirus market crash.
-"""
-
