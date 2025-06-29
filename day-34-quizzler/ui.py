@@ -47,12 +47,10 @@ class QuizInterface:
         
     def true_pressed(self):
         is_right = self.quiz.check_answer("True")
-        self.score_label.config(text=f"Score: {self.quiz.score}")
         self.give_feedback(is_right)
         
     def false_pressed(self):
         is_right = self.quiz.check_answer("False")
-        self.score_label.config(text=f"Score: {self.quiz.score}")
         self.give_feedback(is_right)
         
     def give_feedback(self, is_right: bool):
@@ -60,7 +58,8 @@ class QuizInterface:
             self.canvas.config(bg="green")
         else:
             self.canvas.config(bg="red")
-            
+        
+        self.score_label.config(text=f"Score: {self.quiz.score}")
         self.window.after(1000, self.get_next_question)
         self.window.after(1000, self.reset_canvas)
         
