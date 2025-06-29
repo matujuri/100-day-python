@@ -12,11 +12,14 @@ import pandas as pd
 from datetime import datetime
 import random
 import smtplib
+import os
+import dotenv
+dotenv.load_dotenv()
 
 # ---------------------------- LOAD BIRTHDAYS ------------------------------- #
 def birthday_person(date):
     try:
-        birthdays = pd.read_csv("birthdays.csv")
+        birthdays = pd.read_csv("day-32-automate-mail/birthday-wisher-extrahard/birthdays.csv")
         birthdays_dict = birthdays.to_dict(orient="records")
         birthday_person = [birthday for birthday in birthdays_dict if birthday["month"] == date.month and birthday["day"] == date.day]
         return birthday_person
@@ -26,7 +29,7 @@ def birthday_person(date):
 
 # ---------------------------- LOAD LETTER TEMPLATES ------------------------------- #
 def load_letter_template():
-    with open(f"letter_templates/letter_{random.randint(1, 3)}.txt", "r") as file:
+    with open(f"day-32-automate-mail/birthday-wisher-extrahard/letter_templates/letter_{random.randint(1, 3)}.txt", "r") as file:
         letter = file.read()
     return letter
 
@@ -34,7 +37,7 @@ def load_letter_template():
 smtp_server = "smtp.gmail.com"
 smtp_port = 587
 my_email = "b38860114@gmail.com"
-password = "qrsn fyzq nsdp ufln" #app password
+password = os.getenv("GMAIL_APP_PASSWORD") #app password
 
 def send_email(content, email):
     with smtplib.SMTP(smtp_server, smtp_port) as connection:

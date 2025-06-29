@@ -1,9 +1,12 @@
 # ---------------------------- MAIL ------------------------------- #
 
 import smtplib
+import os
+import dotenv
+dotenv.load_dotenv()
 
 my_email = "b38860114@gmail.com"
-password = "app password"
+password = os.getenv("GMAIL_APP_PASSWORD") #app password
 
 with smtplib.SMTP("smtp.gmail.com") as connection:
     connection.starttls()

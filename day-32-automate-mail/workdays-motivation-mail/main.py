@@ -2,9 +2,12 @@ import random
 import smtplib
 from datetime import datetime
 from email.message import EmailMessage
+import os
+import dotenv
+dotenv.load_dotenv()
 
 # ---------------------------- LOAD QUOTES ------------------------------- #
-FILE_PATH = "quotes.txt"
+FILE_PATH = "day-32-automate-mail/workdays-motivation-mail/quotes.txt"
 def quote_of_the_day():
     try:
         with open(FILE_PATH, "r") as file:
@@ -19,7 +22,7 @@ def quote_of_the_day():
 smtp_server = "smtp.gmail.com"
 smtp_port = 587
 my_email = "b38860114@gmail.com"
-password = "qrsn fyzq nsdp ufln" #app password
+password = os.getenv("GMAIL_APP_PASSWORD") #app password
 
 def send_email():
     msg = EmailMessage()
