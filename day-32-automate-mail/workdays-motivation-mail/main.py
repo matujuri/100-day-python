@@ -19,11 +19,11 @@ def quote_of_the_day():
 smtp_server = "smtp.gmail.com"
 smtp_port = 587
 my_email = "b38860114@gmail.com"
-password = "app password"
+password = "qrsn fyzq nsdp ufln" #app password
 
 def send_email():
     msg = EmailMessage()
-    msg["Subject"] = "月曜日の名言"
+    msg["Subject"] = "やる気の名言"
     msg["From"] = my_email
     msg["To"] = "xiaobaka59@gmail.com"
     msg.set_content(quote_of_the_day(), charset="utf-8")
@@ -35,10 +35,8 @@ def send_email():
         print("Email sent successfully")
         
 # ---------------------------- Weekly Mail ------------------------------- #
-now = datetime.now()
-day_of_week = now.weekday()
-if day_of_week == 0:
+
+if datetime.now().weekday() < 5:  # 月(0)〜金(4)
     send_email()
-else:
-    print("Not Monday")
+
 

@@ -14,12 +14,11 @@ import random
 import smtplib
 
 # ---------------------------- LOAD BIRTHDAYS ------------------------------- #
-def birthday_person():
+def birthday_person(date):
     try:
         birthdays = pd.read_csv("birthdays.csv")
         birthdays_dict = birthdays.to_dict(orient="records")
-        now = datetime.now()
-        birthday_person = [birthday for birthday in birthdays_dict if birthday["month"] == now.month and birthday["day"] == now.day]
+        birthday_person = [birthday for birthday in birthdays_dict if birthday["month"] == date.month and birthday["day"] == date.day]
         return birthday_person
     except FileNotFoundError:
         print("No birthdays found")
@@ -35,7 +34,7 @@ def load_letter_template():
 smtp_server = "smtp.gmail.com"
 smtp_port = 587
 my_email = "b38860114@gmail.com"
-password = "app password"
+password = "qrsn fyzq nsdp ufln" #app password
 
 def send_email(content, email):
     with smtplib.SMTP(smtp_server, smtp_port) as connection:
@@ -49,7 +48,8 @@ def send_email(content, email):
         print("Email sent successfully")
         
 # ---------------------------- MAIN ------------------------------- #
-birthday_person = birthday_person()
+today = datetime.now()
+birthday_person = birthday_person(today)
 if len(birthday_person) > 0:
     for person in birthday_person:
         letter_template = load_letter_template()
