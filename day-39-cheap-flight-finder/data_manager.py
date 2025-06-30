@@ -1,6 +1,7 @@
 import os
 import requests
 from dotenv import load_dotenv
+import pandas as pd
 
 load_dotenv()
 
@@ -12,19 +13,22 @@ class DataManager:
         self.headers = {
             "Authorization": f"Bearer {os.getenv('SHEETY_TOKEN')}"
         }
+        
+    def write_price_data(self, price_data: list[tuple[str, int, int]]):
+        with open("day-39-cheap-flight-finder/price_data.csv", "w") as file:
+            file.write("".join([f"{data[0]},{data[1]},{data[2]}\n" for data in price_data]))
     
-    
-    def get_destination_data(self)->list[str]:
-        with open("day-39-cheap-flight-finder/destination_data.txt", "r") as file:
-            destination_data = file.read().split(",")
+    def get_destination_data(self)->list[tuple[str, int, int]]:
+        csv_data = pd.read_csv("day-39-cheap-flight-finder/price_data.csv")
+        destination_data = csv_data[["iataCode"]].values.tolist()
             
-        if destination_data == ['']:
+        if csv_data.empty:
             response = requests.get(self.SHEETY_ENDPOINT, headers=self.headers)
             response.raise_for_status()
+            price_data = [(row["iataCode"], row.get("lowestDeparturePrice", ""), row.get("lowestReturnPrice", "")) for row in response.json()["sheet1"]]
+            self.write_price_data(price_data)
             destination_data = [row["iataCode"] for row in response.json()["sheet1"]]
-            with open("day-39-cheap-flight-finder/destination_data.txt", "w") as file:
-                file.write(",".join(destination_data))
-        
+            
         return destination_data
     
     def update_price(self, object_id: int, price: int, depart_date: str, is_departure: bool):
