@@ -8,6 +8,8 @@ origin = "TYO"
 def get_lowest_price_and_update_data(origin: str, destination: str, is_departure: bool):
     flight_search = FlightSearch(origin=origin, destination=destination)
     cheapest_flight = flight_search.get_cheapest_flight_in_a_year()
+    if cheapest_flight == {}:
+        return
     flight_data = FlightData(
         depart_date=cheapest_flight["depart_date"],
         origin=cheapest_flight["origin"],

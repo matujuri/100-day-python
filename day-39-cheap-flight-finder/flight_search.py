@@ -29,4 +29,6 @@ class FlightSearch:
     def get_cheapest_flight_in_a_year(self) -> dict:
         response = requests.get(self.FLIGHT_SEARCH_ENDPOINT, params=self.params, headers=self.headers)
         response.raise_for_status()
+        if len(response.json()["data"]) == 0:
+            return {}
         return response.json()["data"][0]
