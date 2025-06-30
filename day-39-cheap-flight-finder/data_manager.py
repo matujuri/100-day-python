@@ -1,48 +1,71 @@
-import os
-import requests
-from dotenv import load_dotenv
-import pandas as pd
-
-load_dotenv()
+from google.oauth2 import service_account
+from googleapiclient.discovery import build
 
 class DataManager:
-    #This class is responsible for talking to the Google Sheet.
-    SHEETY_ENDPOINT = "https://api.sheety.co/5e9221bf09d3ba652c755231464449ec/cheapFlightFinder/sheet1"
-    
+    # This class is responsible for talking to Google Sheets.
+    SPREADSHEET_ID = '1J9kxBoNM5cG_mGde6enGMi8Rv893uYQ4pRLRnNaL16E'  # Google SheetsのスプレッドシートID
+    RANGE_NAME = 'Sheet1!A2:F'  # データの範囲を指定（1行目がヘッダー）
+
     def __init__(self):
-        self.headers = {
-            "Authorization": f"Bearer {os.getenv('SHEETY_TOKEN')}"
-        }
+        self.credentials = service_account.Credentials.from_service_account_file(
+            'cheapest-flight-finder-464513-70046c2a2cc5.json',
+            scopes=["https://www.googleapis.com/auth/spreadsheets"]
+        )
+        self.sheets_service = build('sheets', 'v4', credentials=self.credentials)
+        self.price_data = self.price_data()
+
+    def price_data(self) -> list:
+        # Google Sheetsからデータを取得
+        result = self.sheets_service.spreadsheets().values().get(
+            spreadsheetId=self.SPREADSHEET_ID,
+            range=self.RANGE_NAME
+        ).execute()
         
-    def write_price_data(self, price_data: list[tuple[str, int, int]]):
-        with open("day-39-cheap-flight-finder/price_data.csv", "w") as file:
-            file.write("".join([f"{data[0]},{data[1]},{data[2]}\n" for data in price_data]))
-    
-    def get_destination_data(self)->list[tuple[str, int, int]]:
-        csv_data = pd.read_csv("day-39-cheap-flight-finder/price_data.csv")
-        destination_data = csv_data[["iataCode"]].values.tolist()
-            
-        if csv_data.empty:
-            response = requests.get(self.SHEETY_ENDPOINT, headers=self.headers)
-            response.raise_for_status()
-            price_data = [(row["iataCode"], row.get("lowestDeparturePrice", ""), row.get("lowestReturnPrice", "")) for row in response.json()["sheet1"]]
-            self.write_price_data(price_data)
-            destination_data = [row["iataCode"] for row in response.json()["sheet1"]]
-            
-        return destination_data
-    
+        rows = result.get('values', [])
+        price_data = [{"iataCode": row[1], 
+               "lowestDeparturePrice": int(row[2]) if len(row) > 2 and row[2].isdigit() else 0, 
+               "lowestReturnPrice": int(row[4]) if len(row) > 4 and row[4].isdigit() else 0} 
+              for row in rows]
+        return price_data
+
+    def get_destination_data(self) -> list:
+        return [data["iataCode"] for data in self.price_data]
+
+    def get_price_data(self, destination: str) -> tuple[int, int]:
+        for data in self.price_data:
+            if data["iataCode"] == destination:
+                return (data["lowestDeparturePrice"], data["lowestReturnPrice"])
+        return (0, 0)
+
     def update_price(self, object_id: int, price: int, depart_date: str, is_departure: bool):
+        # Google Sheetsのデータを更新
+        row = object_id + 2
         if is_departure:
-            response = requests.put(
-                url=f"{self.SHEETY_ENDPOINT}/{object_id}",
-                json={"sheet1": {"lowestDeparturePrice": price, "departureDate": depart_date}},
-            headers=self.headers
-            )
-            response.raise_for_status()
+            range_ = f'Sheet1!C{row}'  # Departure Priceを更新
+            value = price
         else:
-            response = requests.put(
-                url=f"{self.SHEETY_ENDPOINT}/{object_id}",
-                json={"sheet1": {"lowestReturnPrice": price, "returnDate": depart_date}},
-                headers=self.headers
-            )
-            response.raise_for_status()
+            range_ = f'Sheet1!E{row}'  # Return Priceを更新
+            value = price
+        
+        # Google Sheetsのセルを更新
+        body = {
+            'values': [[value]]
+        }
+        self.sheets_service.spreadsheets().values().update(
+            spreadsheetId=self.SPREADSHEET_ID,
+            range=range_,
+            valueInputOption="RAW",
+            body=body
+        ).execute()
+        
+        # 日付の更新
+        date_range = f'Sheet1!D{row}' if is_departure else f'Sheet1!F{row}'
+        body_date = {
+            'values': [[depart_date]]
+        }
+        self.sheets_service.spreadsheets().values().update(
+            spreadsheetId=self.SPREADSHEET_ID,
+            range=date_range,
+            valueInputOption="RAW",
+            body=body_date
+        ).execute()
