@@ -27,4 +27,18 @@ class DataManager:
         
         return destination_data
     
-    
+    def update_price(self, object_id: int, price: int, depart_date: str, is_departure: bool):
+        if is_departure:
+            response = requests.put(
+                url=f"{self.SHEETY_ENDPOINT}/{object_id}",
+                json={"sheet1": {"lowestDeparturePrice": price, "departureDate": depart_date}},
+            headers=self.headers
+            )
+            response.raise_for_status()
+        else:
+            response = requests.put(
+                url=f"{self.SHEETY_ENDPOINT}/{object_id}",
+                json={"sheet1": {"lowestReturnPrice": price, "returnDate": depart_date}},
+                headers=self.headers
+            )
+            response.raise_for_status()

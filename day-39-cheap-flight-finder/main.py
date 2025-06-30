@@ -4,11 +4,8 @@ from flight_data import FlightData
 from data_manager import DataManager
 
 origin = "TYO"
-destination = ""
 
-data_manager = DataManager()
-destination_data = data_manager.get_destination_data()
-for destination in destination_data:
+def get_lowest_price_and_update_data(origin: str, destination: str, is_departure: bool):
     flight_search = FlightSearch(origin=origin, destination=destination)
     cheapest_flight = flight_search.get_cheapest_flight_in_six_months()
     flight_data = FlightData(
@@ -18,3 +15,13 @@ for destination in destination_data:
         value=cheapest_flight["value"]
     )
     print(flight_data.__str__())
+    if is_departure:
+        data_manager.update_price(destination_data.index(destination) + 2, flight_data.value, flight_data.depart_date, True)
+    else:
+        data_manager.update_price(destination_data.index(origin) + 2, flight_data.value, flight_data.depart_date, False)
+
+data_manager = DataManager()
+destination_data = data_manager.get_destination_data()
+for destination in destination_data:
+    get_lowest_price_and_update_data(origin, destination, True)
+    get_lowest_price_and_update_data(destination, origin, False)
