@@ -13,7 +13,8 @@ class DataManager:
     # このIDは、Google SheetsのURLから取得できます。
     SPREADSHEET_ID = '1J9kxBoNM5cG_mGde6enGMi8Rv893uYQ4pRLRnNaL16E'
     # データの範囲を指定（1行目はヘッダー行のため、A2からF列までを対象とします）。
-    RANGE_NAME = 'Flight!A2:F'
+    FLIGHT_RANGE_NAME = 'Flight!A2:F'
+    USER_RANGE_NAME = 'User!A2:C'
 
     def __init__(self):
         """
@@ -36,7 +37,7 @@ class DataManager:
         """
         result = self.sheets_service.spreadsheets().values().get(
             spreadsheetId=self.SPREADSHEET_ID,
-            range=self.RANGE_NAME
+            range=self.FLIGHT_RANGE_NAME
         ).execute()
         rows = result.get('values', [])
         
@@ -127,3 +128,21 @@ class DataManager:
             valueInputOption="RAW", # RAWオプションは入力値をそのまま扱います。
             body=user_body
         ).execute()
+        
+    def fetch_all_user_data(self) -> list[UserData]:
+        """
+        Google Sheetsから全てのユーザー情報を取得します。
+        """
+        result = self.sheets_service.spreadsheets().values().get(
+            spreadsheetId=self.SPREADSHEET_ID,
+            range=self.USER_RANGE_NAME
+        ).execute()
+        rows = result.get('values', [])
+        user_data = []
+        for row in rows:
+            user_data.append(UserData(
+                first_name=row[0],
+                last_name=row[1],
+                email=row[2]
+            ))
+        return user_data

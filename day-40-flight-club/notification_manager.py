@@ -19,16 +19,20 @@ class NotificationManager:
     # 送信元メールアドレス（通常はSMTP_USERNAMEと同じ）
     SMTP_FROM = os.getenv("GMAIL_USERNAME")
     
-    def __init__(self, to_addrs: str):
+    def __init__(self):
         """
         NotificationManagerクラスのコンストラクタ。
         
         Args:
             to_addrs (str): 通知メールの送信先アドレス。
         """
-        self.to_addrs = to_addrs
+        self.server = self.SMTP_SERVER
+        self.port = self.SMTP_PORT
+        self.username = self.SMTP_USERNAME
+        self.password = self.SMTP_PASSWORD
+        self.from_addr = self.SMTP_FROM
         
-    def send_email(self, flight_data: FlightData):
+    def send_email(self, to_addrs: str, flight_data: FlightData, saved_price: int):
         """
         指定されたフライトデータに基づいて、フライト最安値アラートメールを送信します。
         
@@ -36,16 +40,17 @@ class NotificationManager:
             flight_data (FlightData): 送信するフライトの詳細情報を含むFlightDataオブジェクト。
         """
         # SMTP接続を確立し、TLS暗号化を開始します。
-        with smtplib.SMTP(self.SMTP_SERVER, self.SMTP_PORT) as connection:
+        with smtplib.SMTP(self.server, self.port) as connection:
             connection.starttls() # 接続を暗号化
-            connection.login(user=self.SMTP_USERNAME, password=self.SMTP_PASSWORD)
+            connection.login(user=self.username, password=self.password)
             # メールメッセージを作成し、送信します。
             # Subjectと本文は改行(\n)で区切ります。
             message = "Subject: Flight Lowest Price Alert!\n\n"
-            message += f"Only {flight_data.value} JPY to fly from {flight_data.origin} to {flight_data.destination} on {flight_data.depart_date}"
+            message += f"Only {flight_data.value} JPY to fly from {flight_data.origin} to {flight_data.destination} on {flight_data.depart_date}\n"
+            message += f"The price was {saved_price} JPY"
             connection.sendmail(
-                from_addr=self.SMTP_FROM,
-                to_addrs=self.to_addrs,
+                from_addr=self.from_addr,
+                to_addrs=to_addrs,
                 msg=message.encode('utf-8') # 日本語対応のためutf-8でエンコード
             )
 

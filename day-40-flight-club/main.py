@@ -7,6 +7,7 @@
 from flight_search import FlightSearch
 from data_manager import DataManager
 from notification_manager import NotificationManager
+from flight_data import FlightData
 from user_data import UserData  
 import os
 import dotenv
@@ -19,7 +20,7 @@ to_addrs = os.getenv("TO_ADDRS")
 # DataManagerのインスタンスを作成（データ操作用）
 data_manager = DataManager()
 # NotificationManagerのインスタンスを作成（メール通知用）
-notification_manager = NotificationManager(to_addrs=to_addrs)
+notification_manager = NotificationManager()
 
 def get_latest_cheapest_flight(origin: str, destination: str):
     """
@@ -61,10 +62,21 @@ def run_flight_check_and_notify():
             data_manager.update_saved_flight_data(flight_data.index, latest_flight_data.value, latest_flight_data.depart_date, flight_data.is_departure)
             print(f"Updated departure price for departure from {flight_data.origin} to {flight_data.destination} from {saved_price} to {latest_flight_data.value}")
             if need_notification(latest_flight_data.value, saved_price):
-                notification_manager.send_email(latest_flight_data)
-                print(f"Sent email for departure from {flight_data.origin} to {flight_data.destination} from {saved_price} to {latest_flight_data.value}")
+                notify_users(latest_flight_data, saved_price)
+
+def notify_users(latest_flight_data: FlightData, saved_price: int):
+    """
+    すべてのユーザーにメールを送信する
+    """
+    user_data = data_manager.fetch_all_user_data()
+    for user in user_data:
+        notification_manager.send_email(user.email, latest_flight_data, saved_price)
+        print(f"Sent email to {user.email} for departure from {latest_flight_data.origin} to {latest_flight_data.destination} from {saved_price} to {latest_flight_data.value}")
 
 def add_user_data():
+    """
+    ユーザーを追加する
+    """
     print("Welcome to Flight Club.\nWe find the best flight deals and email you.")
     first_name = input("What is your first name?\n")
     last_name = input("What is your last name?\n")
@@ -76,6 +88,6 @@ def add_user_data():
 
 
 if __name__ == "__main__":
-    add_user_data()
+    # add_user_data()
     run_flight_check_and_notify()
     
