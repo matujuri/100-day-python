@@ -73,25 +73,6 @@ def notify_users(latest_flight_data: FlightData, saved_price: int):
         notification_manager.send_email(user.email, latest_flight_data, saved_price)
         print(f"Sent email to {user.email} for departure from {latest_flight_data.origin} to {latest_flight_data.destination} from {saved_price} to {latest_flight_data.value}")
 
-def add_user_data():
-    """
-    ユーザーを追加する
-    """
-    print("Welcome to Flight Club.\nWe find the best flight deals and email you.")
-    first_name = input("What is your first name?\n")
-    last_name = input("What is your last name?\n")
-    email = input("What is your email?\n")
-    validate_email = input("Please enter your email again.\n")
-    if email != validate_email:
-        print("Emails do not match. Please try again.")
-        return
-    print(f"Welcome to the Flight Club, {first_name} {last_name}!")
-    print(f"You're in the club {email}!")
-    user_data = UserData(first_name=first_name, last_name=last_name, email=email)
-    data_manager.add_user_data(user_data)
-
-
 if __name__ == "__main__":
-    add_user_data()
-    # run_flight_check_and_notify()
+    run_flight_check_and_notify()
     

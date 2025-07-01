@@ -14,7 +14,7 @@ class DataManager:
     SPREADSHEET_ID = '1J9kxBoNM5cG_mGde6enGMi8Rv893uYQ4pRLRnNaL16E'
     # データの範囲を指定（1行目はヘッダー行のため、A2からF列までを対象とします）。
     FLIGHT_RANGE_NAME = 'Flight!A2:F'
-    USER_RANGE_NAME = 'User!A2:C'
+    USER_RANGE_NAME = 'User!A2:D'
 
     def __init__(self):
         """
@@ -113,23 +113,10 @@ class DataManager:
             valueInputOption="RAW", # RAWオプションは入力値をそのまま扱います。
             body=date_body
         ).execute()
-
-    def add_user_data(self, user_data: UserData):
-        """
-        Google Sheetsにユーザー情報を追加します（既存情報を上書きせず、末尾に追加）。
-        """
-        user_range = self.USER_RANGE_NAME
-        user_body = {
-            'values': [[user_data.first_name, user_data.last_name, user_data.email]]
-        }
-        self.sheets_service.spreadsheets().values().append(
-            spreadsheetId=self.SPREADSHEET_ID,
-            range=user_range,
-            valueInputOption="RAW",  # RAWオプションは入力値をそのまま扱います。
-            insertDataOption="INSERT_ROWS",
-            body=user_body
-        ).execute()
         
+    # add user data execute from google form and add to google sheet automatically.
+    # google form url: https://docs.google.com/forms/d/e/1FAIpQLScP8F0okYJAtF75yphhxGJ4kPFcfaYCqNspYJcXAOESr7O3Hg/viewform?usp=dialog
+
     def fetch_all_user_data(self) -> list[UserData]:
         """
         Google Sheetsから全てのユーザー情報を取得します。
@@ -142,8 +129,8 @@ class DataManager:
         user_data = []
         for row in rows:
             user_data.append(UserData(
-                first_name=row[0],
-                last_name=row[1],
-                email=row[2]
+                first_name=row[1],
+                last_name=row[2],
+                email=row[3]
             ))
         return user_data
