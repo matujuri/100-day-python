@@ -8,15 +8,9 @@ from flight_search import FlightSearch
 from data_manager import DataManager
 from notification_manager import NotificationManager
 from flight_data import FlightData
-from user_data import UserData  
-import os
-import dotenv
-dotenv.load_dotenv()
 
 # 出発地の空港コード (東京)
 origin = "TYO"
-# 通知メールの送信先アドレスを環境変数から取得
-to_addrs = os.getenv("TO_ADDRS")
 # DataManagerのインスタンスを作成（データ操作用）
 data_manager = DataManager()
 # NotificationManagerのインスタンスを作成（メール通知用）
