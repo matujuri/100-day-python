@@ -1,6 +1,7 @@
 import os
 import requests
 from dotenv import load_dotenv
+from flight_data import FlightData
 
 load_dotenv()
 
@@ -42,7 +43,7 @@ class FlightSearch:
             "one_way": True # 片道フライトの価格を検索します。
         }
 
-    def get_latest_cheapest_flight_in_a_year(self) -> dict:
+    def get_latest_cheapest_flight_in_a_year(self) -> FlightData | None:
         """
         指定された出発地と目的地に対する過去1年間で最も安いフライトを検索します。
         Travelpayouts APIにリクエストを送信し、そのレスポンスからフライトデータを抽出します。
@@ -60,11 +61,13 @@ class FlightSearch:
         
         # レスポンスのJSONデータからフライトデータを取り出します。
         # レスポンスの 'data' フィールドはフライト情報のリストです。
-        flight_data = response.json()["data"]
+        flight_data = response.json()["data"][0]
         
-        # フライトデータが見つからない場合は空の辞書を返します。
-        if not flight_data:
-            return {}
-        
-        # 最も安いフライトデータ（最初の要素）を返します。
-        return flight_data[0]
+        if flight_data == {}:
+            return None
+        return FlightData(
+            depart_date=flight_data["depart_date"],
+            origin=flight_data["origin"],
+            destination=flight_data["destination"],
+            value=flight_data["value"],
+        )
