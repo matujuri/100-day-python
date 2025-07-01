@@ -116,16 +116,17 @@ class DataManager:
 
     def add_user_data(self, user_data: UserData):
         """
-        Google Sheetsにユーザー情報を追加します。
+        Google Sheetsにユーザー情報を追加します（既存情報を上書きせず、末尾に追加）。
         """
-        user_range = 'User!A2:C'
+        user_range = self.USER_RANGE_NAME
         user_body = {
             'values': [[user_data.first_name, user_data.last_name, user_data.email]]
         }
-        self.sheets_service.spreadsheets().values().update(
+        self.sheets_service.spreadsheets().values().append(
             spreadsheetId=self.SPREADSHEET_ID,
             range=user_range,
-            valueInputOption="RAW", # RAWオプションは入力値をそのまま扱います。
+            valueInputOption="RAW",  # RAWオプションは入力値をそのまま扱います。
+            insertDataOption="INSERT_ROWS",
             body=user_body
         ).execute()
         

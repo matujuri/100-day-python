@@ -81,6 +81,10 @@ def add_user_data():
     first_name = input("What is your first name?\n")
     last_name = input("What is your last name?\n")
     email = input("What is your email?\n")
+    validate_email = input("Please enter your email again.\n")
+    if email != validate_email:
+        print("Emails do not match. Please try again.")
+        return
     print(f"Welcome to the Flight Club, {first_name} {last_name}!")
     print(f"You're in the club {email}!")
     user_data = UserData(first_name=first_name, last_name=last_name, email=email)
@@ -88,6 +92,6 @@ def add_user_data():
 
 
 if __name__ == "__main__":
-    # add_user_data()
-    run_flight_check_and_notify()
+    add_user_data()
+    # run_flight_check_and_notify()
     
