@@ -20,12 +20,11 @@ class DataManager:
             scopes=["https://www.googleapis.com/auth/spreadsheets"]
         )
         self.sheets_service = build('sheets', 'v4', credentials=self.credentials)
-        self.price_data = self._fetch_all_price_data()
 
-    def _fetch_all_price_data(self) -> list:
+    def fetch_all_saved_flight_data(self) -> list:
         """
         Google Sheetsから全てのフライト価格データを取得します。
-        取得したデータは、IATAコード、最低往路価格、最低復路価格を含む辞書のリストとして整形されます。
+        取得したデータは、出発日、出発地、目的地、最低往路価格、最低復路価格を含む辞書のリストとして整形されます。
         Returns:
             list: フライト価格データのリスト。
         """
@@ -33,49 +32,16 @@ class DataManager:
             spreadsheetId=self.SPREADSHEET_ID,
             range=self.RANGE_NAME
         ).execute()
-        
         rows = result.get('values', [])
-        price_data = [{"iataCode": row[1], 
-               "lowestDeparturePrice": int(row[2]) if len(row) > 2 and row[2].isdigit() else 0, 
-               "lowestReturnPrice": int(row[4]) if len(row) > 4 and row[4].isdigit() else 0} 
+        saved_flight_data = [{"destination": row[1], 
+               "departure_price": int(row[2]) if len(row) > 2 and row[2].isdigit() else 0, 
+               "departure_date": row[3] if len(row) > 3 else None,
+               "return_price": int(row[4]) if len(row) > 4 and row[4].isdigit() else 0,
+               "return_date": row[5] if len(row) > 5 else None} 
               for row in rows]
-        return price_data
+        return saved_flight_data
 
-    def get_destination_data(self) -> list:
-        """
-        現在ロードされている価格データから全ての目的地のIATAコードのリストを取得します。
-        Returns:
-            list: 目的地のIATAコードのリスト。
-        """
-        return [data["iataCode"] for data in self.price_data]
-    
-    def get_departure_price(self, destination: str) -> int:
-        """
-        指定された目的地の最低往路価格を取得します。
-        Args:
-            destination (str): 目的地のIATAコード。
-        Returns:
-            int: 最低往路価格。
-        """
-        return next(
-            (data["lowestDeparturePrice"] for data in self.price_data if data["iataCode"] == destination),
-            0
-        )
-    
-    def get_return_price(self, destination: str) -> int:
-        """
-        指定された目的地の最低復路価格を取得します。
-        Args:
-            destination (str): 目的地のIATAコード。
-        Returns:
-            int: 最低復路価格。
-        """
-        return next(
-            (data["lowestReturnPrice"] for data in self.price_data if data["iataCode"] == destination),
-            0
-        )
-
-    def update_price(self, object_id: int, price: int, depart_date: str, is_departure: bool):
+    def update_saved_flight_data(self, object_id: int, price: int, depart_date: str, is_departure: bool):
         """
         Google Sheets の特定の行にあるフライト価格と日付を更新します。
         Args:
@@ -85,7 +51,7 @@ class DataManager:
             is_departure (bool): 往路価格を更新する場合はTrue、復路価格を更新する場合はFalse。
         """
         # Google Sheetsのデータを更新
-        row = object_id + 2 # スプレッドシートの行は1から始まり、ヘッダー行があるため+2
+        row = object_id
         if is_departure:
             range_ = f'Sheet1!C{row}'  # Departure Priceを更新
             value = price
@@ -115,6 +81,3 @@ class DataManager:
             valueInputOption="RAW",
             body=body_date
         ).execute()
-        
-        # データ更新後、price_dataを再取得して最新の状態を反映
-        self.price_data = self._fetch_all_price_data()

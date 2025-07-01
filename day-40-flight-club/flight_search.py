@@ -37,7 +37,7 @@ class FlightSearch:
             "one_way": True
         }
 
-    def get_cheapest_flight_in_a_year(self) -> dict:
+    def get_latest_cheapest_flight_in_a_year(self) -> dict:
         """
         指定された出発地と目的地に対する過去1年間で最も安いフライトを検索します。
         APIから取得したレスポンスを処理し、フライトデータが存在しない場合は空の辞書を返します。
