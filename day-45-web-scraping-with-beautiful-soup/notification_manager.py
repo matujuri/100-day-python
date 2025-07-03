@@ -1,6 +1,7 @@
 import os
 import smtplib
 from dotenv import load_dotenv
+from email.mime.text import MIMEText
 
 load_dotenv()
 
@@ -30,6 +31,12 @@ class NotificationManager:
         self.from_addr = self.SMTP_FROM
         
     def send_email(self, to_addrs: str, subject: str, message: str):
+        # HTMLメールを作成
+        msg = MIMEText(message, 'html', 'utf-8')
+        msg['Subject'] = subject
+        msg['From'] = self.from_addr
+        msg['To'] = to_addrs
+
         # SMTP接続を確立し、TLS暗号化を開始します。
         with smtplib.SMTP(self.server, self.port) as connection:
             connection.starttls() # 接続を暗号化
@@ -39,7 +46,8 @@ class NotificationManager:
             connection.sendmail(
                 from_addr=self.from_addr,
                 to_addrs=to_addrs,
-                msg=f"Subject: {subject}\n\n{message}".encode('utf-8')
+                msg=msg.as_string()
             )
+            print("Email sent successfully")
 
         
