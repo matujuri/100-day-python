@@ -2,6 +2,10 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 from time import sleep, time
+import subprocess
+
+# Prevent sleep (run caffeinate in background)
+caffeinate = subprocess.Popen(["caffeinate"])
 
 # Setup Chrome driver
 chrome_options = webdriver.ChromeOptions()
@@ -39,9 +43,6 @@ except NoSuchElementException:
 
 # Find the big cookie to click
 cookie = driver.find_element(by=By.ID, value="bigCookie")
-
-# Get all store items (products 0-17)
-item_ids = [f"product{i}" for i in range(18)]
 
 # Set timers
 wait_time = 5
