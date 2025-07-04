@@ -65,6 +65,21 @@ try:
     sleep(5) 
 
     print("ログインプロセスが完了しました。")
+    
+    driver.get("https://www.linkedin.com/jobs/search/?distance=25&f_AL=true&f_WT=2&geoId=101355337&keywords=ux%20designer&origin=JOB_SEARCH_PAGE_JOB_FILTER&refresh=true")
+    print("仕事一覧を表示しました。")
+    
+    sleep(5) 
+    
+    job_list = driver.find_elements(By.CLASS_NAME, 'job-card-list__title--link')
+    for job in job_list:
+        job.click()
+        print("job clicked")
+        sleep(5)
+        apply_button = driver.find_element(By.CLASS_NAME, 'jobs-save-button')
+        apply_button.click()
+        print("apply button clicked")
+        sleep(5)
 
 except Exception as e:
     print(f"エラーが発生しました: {e}")
