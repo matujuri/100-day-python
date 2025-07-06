@@ -10,6 +10,7 @@ def delay_decorator(func):
         # Do something before
         func()
         func()
+        print(func.__name__)
         # Do something after
     return wrapper
 
