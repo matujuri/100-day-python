@@ -16,11 +16,11 @@ class Scoreboard(Turtle):
         self.update_scoreboard()
         
     def get_high_score(self):
-        with open("data.txt", mode="r") as file:
+        with open("day-24-snake-game-save-high-score/data.txt", mode="r") as file:
             return int(file.read())
         
     def set_high_score(self, score):
-        with open("data.txt", mode="w") as file:
+        with open("day-24-snake-game-save-high-score/data.txt", mode="w") as file:
             file.write(str(score))
         
     def update_scoreboard(self):
