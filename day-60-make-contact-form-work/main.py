@@ -14,8 +14,6 @@ def about():
 
 @app.route("/contact", methods=["GET", "POST"])
 def contact():
-    if request.method == "POST":
-        return "<h1>Successfully sent your message</h1>"
     return render_template("contact.html")
 
 @app.route("/post/<int:id>")
