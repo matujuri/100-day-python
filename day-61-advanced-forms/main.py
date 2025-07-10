@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request
+from MyForm import MyForm
 
 '''
 Red underlines? Install the required packages first: 
@@ -23,10 +24,11 @@ def home():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    form = MyForm()
     if request.method == "POST":
         return "<h1>Successfully logged in</h1>"
-    return render_template('login.html')
-
+    return render_template('login.html', form=form)
 
 if __name__ == '__main__':
+    app.secret_key = "1234567890"
     app.run(debug=True)
