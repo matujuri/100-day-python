@@ -25,8 +25,13 @@ def home():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     form = MyForm()
-    form.validate_on_submit()
-    return render_template('login.html', form=form)
+    if request.method == "POST":
+        if form.validate_on_submit() and form.email.data == "admin@email.com" and form.password.data == "12345678":
+            return render_template('success.html')
+        else:
+            return render_template('denied.html')
+    else:
+        return render_template('login.html', form=form)
 
 if __name__ == '__main__':
     app.secret_key = "1234567890"
