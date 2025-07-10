@@ -2,6 +2,15 @@
 
 {% block title %}Access Denied{% endblock %}
 
+{% block styling %}
+{{ super() }}
+<style>
+    h1 {
+        color: red;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container">
 	<h1>Access Denied </h1>
