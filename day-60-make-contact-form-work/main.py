@@ -20,5 +20,9 @@ def contact():
 def post(id):
     return render_template("post.html", post=posts.get_post(id))
 
+@app.route("/form-entry", methods=["POST"])
+def receive_data():
+    return "<h1>Successfully sent your message</h1>"
+
 if __name__ == "__main__":
     app.run(debug=True)
