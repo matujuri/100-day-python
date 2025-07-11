@@ -40,9 +40,13 @@ with app.app_context():
     # db.session.commit()
     
     # read all books
-    books = db.session.execute(db.select(Book).order_by(Book.id)).scalars()
-    for book in books:
-        print(book.title, book.author, book.rating)
+    # books = db.session.execute(db.select(Book).order_by(Book.id)).scalars()
+    # for book in books:
+    #     print(book.title, book.author, book.rating)
+    
+    # read a book by title
+    book = db.session.execute(db.select(Book).where(Book.title == "The Great Gatsby")).scalar_one()
+    print(book.title, book.author, book.rating)
     
     # # read a book by id
     # book = db.get_or_404(Book, 1)
