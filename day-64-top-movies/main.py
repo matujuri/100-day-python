@@ -9,6 +9,11 @@ from wtforms.validators import DataRequired
 import requests
 from edit_movie import EditMovieForm
 from add_movie import AddMovieForm
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+themoviedbAPITOKEN = os.getenv("themoviedbAPITOKEN")
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
@@ -68,7 +73,16 @@ def add():
     form = AddMovieForm()
     if request.method == "POST" and form.validate_on_submit():
         title = request.form["title"]
-        
+        headers = {
+            "Authorization": f"Bearer {themoviedbAPITOKEN}"
+        }
+        body = {
+            "query": title
+        }
+        response = requests.get("https://api.themoviedb.org/3/search/movie", headers=headers, params=body)
+        response.raise_for_status()
+        data = response.json()
+        return render_template("select.html", options=data["results"][:10])
     return render_template("add.html", form=form)
 
 if __name__ == '__main__':
