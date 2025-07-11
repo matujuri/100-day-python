@@ -23,22 +23,22 @@ db.init_app(app)
 with app.app_context():
     db.create_all()
 
-    @app.route("/")
-    def home():
-        return render_template("index.html", all_books=db.session.execute(db.select(Book).order_by(Book.id)).scalars())
+@app.route("/")
+def home():
+    return render_template("index.html", all_books=db.session.execute(db.select(Book).order_by(Book.id)).scalars())
 
 
-    @app.route("/add", methods=["GET", "POST"])
-    def add():
-        if request.method == "POST":
-            new_book = Book()
-            new_book.title = request.form["title"]
-            new_book.author = request.form["author"]
-            new_book.rating = float(request.form["rating"])
-            db.session.add(new_book)
-            db.session.commit()
-            return redirect(url_for("home"))
-        return render_template("add.html")
+@app.route("/add", methods=["GET", "POST"])
+def add():
+    if request.method == "POST":
+        new_book = Book()
+        new_book.title = request.form["title"]
+        new_book.author = request.form["author"]
+        new_book.rating = float(request.form["rating"])
+        db.session.add(new_book)
+        db.session.commit()
+        return redirect(url_for("home"))
+    return render_template("add.html")
 
 
 if __name__ == "__main__":
