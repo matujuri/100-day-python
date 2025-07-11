@@ -10,6 +10,12 @@ class Book(db.Model):
     title: Mapped[str] = mapped_column(unique=True, nullable=False)
     author: Mapped[str] = mapped_column(nullable=False)
     rating: Mapped[float] = mapped_column(nullable=False)
+    
+    def __init__(self, id, title, author, rating):
+        self.id = id
+        self.title = title
+        self.author = author
+        self.rating = rating
 
 # create the app
 app = Flask(__name__)
@@ -21,11 +27,11 @@ db.init_app(app)
 with app.app_context():
     db.create_all()
     
-    # book = Book(
-    #     id=1,
-    #     title="Harry Potter",
-    #     author="J. K. Rowling",
-    #     rating=9.3
-    # )
-    # db.session.add(book)
-    # db.session.commit()
+    book = Book(
+        id=1,
+        title="Harry Potter",
+        author="J. K. Rowling",
+        rating=9.3
+    )
+    db.session.add(book)
+    db.session.commit()
