@@ -26,7 +26,7 @@ Bootstrap5(app)
 
 class CafeForm(FlaskForm):
     cafe = StringField('Cafe name', validators=[DataRequired()])
-    location = StringField('Location', validators=[DataRequired(), URL()])
+    location = StringField('Location', default="https://goo.gl/maps/ALR8iBiNN6tVfuAA8", validators=[DataRequired(), URL()])
     open = TimeField('Open', default=time(8, 0, 0), validators=[DataRequired()])
     close = TimeField('Close', default=time(17, 0, 0), validators=[DataRequired()])
     coffee = SelectField('Coffee', validators=[DataRequired()], choices=[(str(i), i * '☕️') for i in range(6)])
@@ -54,7 +54,7 @@ def add_cafe():
     form = CafeForm()
     if form.validate_on_submit():
         with open('day-62-coffee-and-wifi/cafe-data.csv', mode='a', encoding='utf-8') as csv_file:
-            csv_file.write(f"\n{form.cafe.data}, {form.location.data}, {form.open.data}, {form.close.data}, {form.coffee.data}, {form.wifi.data}, {form.power.data}")
+            csv_file.write(f"\n{form.cafe.data}, {form.location.data}, {form.open.data.strftime('%H:%M') if form.open.data else ''}, {form.close.data.strftime('%H:%M') if form.close.data else ''}, {form.coffee.data}, {form.wifi.data}, {form.power.data}")
         return redirect(url_for('cafes'))
     return render_template('add.html', form=form)
 
