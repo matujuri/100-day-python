@@ -1,3 +1,7 @@
 import sqlite3
 
-conn = sqlite3.connect("day-63-virtual-bookshelf/sqlite-pactice/books-collection.db")
+db = sqlite3.connect("day-63-virtual-bookshelf/sqlite-pactice/books-collection.db")
+cursor = db.cursor()
+
+cursor.execute("CREATE TABLE books (id INTEGER PRIMARY KEY, title varchar(250) NOT NULL UNIQUE, author varchar(250) NOT NULL, rating FLOAT NOT NULL)")
+
