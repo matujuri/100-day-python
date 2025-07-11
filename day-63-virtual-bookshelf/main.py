@@ -1,27 +1,44 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_bootstrap import Bootstrap5
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy import Integer, String, Float
+
+class Base(DeclarativeBase):
+    pass
+
+db = SQLAlchemy(model_class=Base)
+
+class Book(db.Model):
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    title: Mapped[str] = mapped_column(String, unique=True, nullable=False)
+    author: Mapped[str] = mapped_column(String, nullable=False)
+    rating: Mapped[float] = mapped_column(Float, nullable=False)
 
 app = Flask(__name__)
 Bootstrap5(app)
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///books-collection.db"
+db.init_app(app)
 
-all_books = []
+with app.app_context():
+    db.create_all()
 
-@app.route("/")
-def home():
-    return render_template("index.html", all_books=all_books)
+    @app.route("/")
+    def home():
+        return render_template("index.html", all_books=db.session.execute(db.select(Book).order_by(Book.id)).scalars())
 
 
-@app.route("/add", methods=["GET", "POST"])
-def add():
-    if request.method == "POST":
-        new_book = {
-            "title": request.form["title"],
-            "author": request.form["author"],
-            "rating": request.form["rating"]
-        }
-        all_books.append(new_book)
-        return redirect(url_for("home"))
-    return render_template("add.html")
+    @app.route("/add", methods=["GET", "POST"])
+    def add():
+        if request.method == "POST":
+            new_book = Book()
+            new_book.title = request.form["title"]
+            new_book.author = request.form["author"]
+            new_book.rating = float(request.form["rating"])
+            db.session.add(new_book)
+            db.session.commit()
+            return redirect(url_for("home"))
+        return render_template("add.html")
 
 
 if __name__ == "__main__":
