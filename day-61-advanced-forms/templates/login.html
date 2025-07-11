@@ -1,41 +1,37 @@
-<!DOCTYPE html>
+{% extends "base.html" %}
 
-<html>
-  <head>
-    <title>Login</title>
-    {{ bootstrap.load_css() }}
-  </head>
-  <body>
-    <div class="container">
-      <h1>Login</h1>
-      <!-- This is where our form will go. -->
-	   <!-- novalidate is used to disable the browser's built-in validation -->
-      <form method="POST" action="{{ url_for('login') }}" novalidate>
-        {{ form.csrf_token }}
-        <p>
-          {{ form.email.label }} <br />
-          {{ form.email(size=30) }}
-		  {% if form.email.errors %}
-		  <ul class="errors">
-		    {% for error in form.email.errors %}
-			<li style="color: red;">{{ error }}</li>
-		    {% endfor %}
-		  </ul>
-	      {% endif %}
-        </p>
-        <p>
-          {{ form.password.label }} <br />
-          {{ form.password(size=30) }}
-		  {% if form.password.errors %}
-		  <ul class="errors">
-		    {% for error in form.password.errors %}
-			<li style="color: red;">{{ error }}</li>
-		    {% endfor %}
-		  </ul>
-	      {% endif %}
-        </p>
-        {{ form.submit }}
-      </form>
-    </div>
-  </body>
-</html>
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h1>Login</h1>
+  <!-- This is where our form will go. -->
+ <!-- novalidate is used to disable the browser's built-in validation -->
+  <form method="POST" action="{{ url_for('login') }}" novalidate>
+    {{ form.csrf_token }}
+    <p>
+      {{ form.email.label }} <br />
+      {{ form.email(size=30) }}
+  {% if form.email.errors %}
+  <ul class="errors">
+    {% for error in form.email.errors %}
+  <li style="color: red;">{{ error }}</li>
+    {% endfor %}
+  </ul>
+    {% endif %}
+    </p>
+    <p>
+      {{ form.password.label }} <br />
+      {{ form.password(size=30) }}
+  {% if form.password.errors %}
+  <ul class="errors">
+    {% for error in form.password.errors %}
+  <li style="color: red;">{{ error }}</li>
+    {% endfor %}
+  </ul>
+    {% endif %}
+    </p>
+    {{ form.submit }}
+  </form>
+</div>
+{% endblock %}
