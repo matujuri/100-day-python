@@ -8,6 +8,7 @@ from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
 import requests
 from edit_movie import EditMovieForm
+from add_movie import AddMovieForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
@@ -41,7 +42,8 @@ def home():
 
 @app.route("/edit", methods=["GET", "POST"])
 def edit():
-    if request.method == "POST":
+    form = EditMovieForm()
+    if request.method == "POST" and form.validate_on_submit():
         movie_id = request.form["id"]
         movie_to_update = db.get_or_404(Movie, movie_id)
         movie_to_update.rating = float(request.form["rating"])
@@ -50,7 +52,6 @@ def edit():
         return redirect(url_for("home"))
     movie_id = request.args.get('id')
     movie_selected = db.get_or_404(Movie, movie_id)
-    form=EditMovieForm()
     form.id.data = str(movie_selected.id)
     return render_template("edit.html", form=form)
 
@@ -61,6 +62,14 @@ def delete():
     db.session.delete(movie_to_delete)
     db.session.commit()
     return redirect(url_for("home"))
+
+@app.route("/add", methods=["GET", "POST"])
+def add():
+    form = AddMovieForm()
+    if request.method == "POST" and form.validate_on_submit():
+        title = request.form["title"]
+        
+    return render_template("add.html", form=form)
 
 if __name__ == '__main__':
     app.run(debug=True)
