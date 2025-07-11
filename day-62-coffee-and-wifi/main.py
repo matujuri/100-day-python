@@ -1,9 +1,10 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, url_for
 from flask_bootstrap import Bootstrap5
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
-from wtforms.validators import DataRequired
+from wtforms import StringField, SubmitField, SelectField, TimeField
+from wtforms.validators import DataRequired, URL
 import csv
+from datetime import time
 
 '''
 Red underlines? Install the required packages first: 
@@ -25,6 +26,12 @@ Bootstrap5(app)
 
 class CafeForm(FlaskForm):
     cafe = StringField('Cafe name', validators=[DataRequired()])
+    location = StringField('Location', validators=[DataRequired(), URL()])
+    open = TimeField('Open', default=time(8, 0, 0), validators=[DataRequired()])
+    close = TimeField('Close', default=time(17, 0, 0), validators=[DataRequired()])
+    coffee = SelectField('Coffee', validators=[DataRequired()], choices=[(str(i), i * '☕️') for i in range(6)])
+    wifi = SelectField('Wifi', validators=[DataRequired()], choices=[(str(i), i * '💪') for i in range(6)])
+    power = SelectField('Power', validators=[DataRequired()], choices=[(str(i), i * '🔌') for i in range(6)])
     submit = SubmitField('Submit')
 
 # Exercise:
@@ -42,20 +49,19 @@ def home():
     return render_template("index.html")
 
 
-@app.route('/add')
+@app.route('/add', methods=['GET', 'POST'])
 def add_cafe():
     form = CafeForm()
     if form.validate_on_submit():
-        print("True")
-    # Exercise:
-    # Make the form write a new row into cafe-data.csv
-    # with   if form.validate_on_submit()
+        with open('day-62-coffee-and-wifi/cafe-data.csv', mode='a', encoding='utf-8') as csv_file:
+            csv_file.write(f"\n{form.cafe.data}, {form.location.data}, {form.open.data}, {form.close.data}, {form.coffee.data}, {form.wifi.data}, {form.power.data}")
+        return redirect(url_for('cafes'))
     return render_template('add.html', form=form)
 
 
 @app.route('/cafes')
 def cafes():
-    with open('cafe-data.csv', newline='', encoding='utf-8') as csv_file:
+    with open('day-62-coffee-and-wifi/cafe-data.csv', newline='', encoding='utf-8') as csv_file:
         csv_data = csv.reader(csv_file, delimiter=',')
         list_of_rows = []
         for row in csv_data:
