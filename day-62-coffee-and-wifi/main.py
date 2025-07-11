@@ -16,9 +16,9 @@ class CafeForm(FlaskForm):
     location = StringField('Location', validators=[DataRequired(), URL()])
     open = TimeField('Open', default=time(8, 0, 0), validators=[DataRequired()])
     close = TimeField('Close', default=time(17, 0, 0), validators=[DataRequired()])
-    coffee = SelectField('Coffee', validators=[DataRequired()], choices=[(i * '☕️', i) for i in range(1, 6)]) # type: ignore
-    wifi = SelectField('Wifi', validators=[DataRequired()], choices=[(i * '💪', i) for i in range(1, 6)]) # type: ignore
-    power = SelectField('Power', validators=[DataRequired()], choices=[(i * '🔌', i) for i in range(1, 6)]) # type: ignore
+    coffee = SelectField('Coffee', validators=[DataRequired()], choices=[('✘', 0), ('☕️', 1), ('☕️☕️', 2), ('☕️☕️☕️', 3), ('☕️☕️☕️☕️', 4), ('☕️☕️☕️☕️☕️', 5)]) # type: ignore
+    wifi = SelectField('Wifi', validators=[DataRequired()], choices=[('✘', 0), ('💪', 1), ('💪💪', 2), ('💪💪💪', 3), ('💪💪💪💪', 4), ('💪💪💪💪💪', 5)]) # type: ignore
+    power = SelectField('Power', validators=[DataRequired()], choices=[('✘', 0), ('🔌', 1), ('🔌🔌', 2), ('🔌🔌🔌', 3), ('🔌🔌🔌🔌', 4), ('🔌🔌🔌🔌🔌', 5)]) # type: ignore
     submit = SubmitField('Submit')
 
 # all Flask routes below
@@ -31,13 +31,7 @@ def add_cafe():
     form = CafeForm()
     if request.method == 'POST' and form.validate_on_submit():
         with open('day-62-coffee-and-wifi/cafe-data.csv', mode='a', encoding='utf-8') as csv_file:
-            csv_file.write(f"\n{form.cafe.data}, \
-                           {form.location.data}, \
-                           {form.open.data.strftime('%H:%M') if form.open.data else ''}, \
-                           {form.close.data.strftime('%H:%M') if form.close.data else ''}, \
-                           {form.coffee.data}, \
-                           {form.wifi.data}, \
-                           {form.power.data}")
+            csv_file.write(f"\n{form.cafe.data}, {form.location.data}, {form.open.data.strftime('%H:%M') if form.open.data else ''}, {form.close.data.strftime('%H:%M') if form.close.data else ''}, {form.coffee.data}, {form.wifi.data}, {form.power.data}")
         return redirect(url_for('cafes'))
     return render_template('add.html', form=form)
 
