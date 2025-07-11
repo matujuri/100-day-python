@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Edit Book Rating{% endblock %}
+{% block content %}
+<h1>Edit Book Rating</h1>
+<p>Book Name: {{ book.title }}</p>
+<p>Current Rating: {{ book.rating }}</p>
+<form method="POST">
+    <label for="rating">Rating:</label>
+    <input type="string" name="rating" placeholder="New Rating">
+    <input type="hidden" name="id" value="{{ book.id }}">
+    <button type="submit">Change Rating</button>
+</form>
+{% endblock %}
