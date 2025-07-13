@@ -4,8 +4,8 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import Integer, String, Float
 import requests
-from edit_movie import EditMovieForm
-from search_movie import SearchMovieForm
+from rate_form import RateForm
+from search_form import SearchForm
 import os
 from dotenv import load_dotenv
 import json
@@ -48,13 +48,14 @@ with app.app_context():
 
 @app.route("/")
 def home():
-    return render_template("index.html", movies=db.session.execute(db.select(Movie).order_by(Movie.ranking.desc())).scalars())
+    movies = db.session.execute(db.select(Movie).order_by(Movie.ranking.desc())).scalars()
+    return render_template("index.html", movies=movies)
 
-@app.route("/edit", methods=["GET", "POST"])
-def edit():
+@app.route("/rate", methods=["GET", "POST"])
+def rate():
     movie_id = request.args.get('id')
     movie_to_update = db.get_or_404(Movie, movie_id)
-    form = EditMovieForm()
+    form = RateForm()
     if request.method == "POST" and form.validate_on_submit():
         movie_to_update.rating = float(request.form["rating"])
         movie_to_update.review = request.form["review"]
@@ -64,7 +65,7 @@ def edit():
     movie_title = movie_to_update.title
     form.rating.data = movie_to_update.rating
     form.review.data = movie_to_update.review
-    return render_template("edit.html", form=form, title=movie_title)
+    return render_template("rate.html", form=form, title=movie_title)
 
 @app.route("/delete")
 def delete():
@@ -77,7 +78,7 @@ def delete():
 
 @app.route("/search", methods=["GET", "POST"])
 def search():
-    form = SearchMovieForm()
+    form = SearchForm()
     if request.method == "POST" and form.validate_on_submit():
         title = request.form["title"]
         headers = {
@@ -89,6 +90,12 @@ def search():
         response = requests.get("https://api.themoviedb.org/3/search/movie", headers=headers, params=body)
         response.raise_for_status()
         data = response.json()["results"]
+        saved_movies = db.session.execute(db.select(Movie).order_by(Movie.ranking.desc())).scalars()
+        
+        # 保存済みの映画を除外
+        for movie in saved_movies:
+            data = [item for item in data if item["title"] != movie.title]
+        
         popularity_sorted_data=sorted(data, key=lambda x: x["popularity"], reverse=True)[:10]
         release_date_sorted_data = sorted(popularity_sorted_data, key=lambda x: x["release_date"])
         return render_template("select.html", options=release_date_sorted_data)
@@ -108,7 +115,7 @@ def add():
     db.session.add(movie)
     db.session.commit()
     update_ranking()
-    return redirect(url_for("edit", id=movie.id))
+    return redirect(url_for("rate", id=movie.id))
 
 if __name__ == '__main__':
     app.run(debug=True)
