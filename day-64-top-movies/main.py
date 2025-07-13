@@ -54,21 +54,18 @@ def home():
 
 @app.route("/edit", methods=["GET", "POST"])
 def edit():
+    movie_id = request.args.get('id')
+    movie_to_update = db.get_or_404(Movie, movie_id)
     form = EditMovieForm()
     if request.method == "POST" and form.validate_on_submit():
-        movie_id = request.form["id"]
-        movie_to_update = db.get_or_404(Movie, movie_id)
         movie_to_update.rating = float(request.form["rating"])
         movie_to_update.review = request.form["review"]
         db.session.commit()
         update_ranking()
         return redirect(url_for("home"))
-    movie_id = request.args.get('id')
-    movie_selected = db.get_or_404(Movie, movie_id)
-    form.id.data = str(movie_selected.id)
-    movie_title = movie_selected.title
-    form.rating.data = movie_selected.rating
-    form.review.data = movie_selected.review
+    movie_title = movie_to_update.title
+    form.rating.data = movie_to_update.rating
+    form.review.data = movie_to_update.review
     return render_template("edit.html", form=form, title=movie_title)
 
 @app.route("/delete")
