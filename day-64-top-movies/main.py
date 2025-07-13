@@ -102,6 +102,10 @@ def delete():
     update_ranking()
     return redirect(url_for("home"))
 
+def _filter_saved_movies(search_results, saved_movies):
+        saved_titles = {movie.title for movie in saved_movies}
+        return [item for item in search_results if item["title"] not in saved_titles]
+
 @app.route("/search", methods=["GET", "POST"])
 def search():
     """
@@ -122,13 +126,11 @@ def search():
         response = requests.get("https://api.themoviedb.org/3/search/movie", headers=headers, params=body)
         response.raise_for_status()
         data = response.json()["results"]
+        
         saved_movies = db.session.execute(db.select(Movie).order_by(Movie.ranking.desc())).scalars()
+        filtered_data = _filter_saved_movies(data, saved_movies)
         
-        # 保存済みの映画を除外
-        for movie in saved_movies:
-            data = [item for item in data if item["title"] != movie.title]
-        
-        popularity_sorted_data=sorted(data, key=lambda x: x["popularity"], reverse=True)[:10]
+        popularity_sorted_data=sorted(filtered_data, key=lambda x: x["popularity"], reverse=True)[:10]
         release_date_sorted_data = sorted(popularity_sorted_data, key=lambda x: x["release_date"])
         return render_template("select.html", options=release_date_sorted_data)
     return render_template("search.html", form=form)
