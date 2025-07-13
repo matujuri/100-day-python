@@ -58,7 +58,8 @@ def edit():
     movie_id = request.args.get('id')
     movie_selected = db.get_or_404(Movie, movie_id)
     form.id.data = str(movie_selected.id)
-    return render_template("edit.html", form=form)
+    movie_title = movie_selected.title
+    return render_template("edit.html", form=form, title=movie_title)
 
 @app.route("/delete")
 def delete():
@@ -99,7 +100,7 @@ def add_movie(title):
     movie.review = ""
     db.session.add(movie)
     db.session.commit()
-    return redirect(url_for("home"))
+    return redirect(url_for("edit", id=movie.id))
 
 if __name__ == '__main__':
     app.run(debug=True)
