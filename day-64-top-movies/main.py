@@ -140,12 +140,12 @@ def add():
     The Movie Database APIから取得した映画情報を使用して新しいMovieオブジェクトを作成し、
     データベースに保存後、ランキングを再計算し、評価ページにリダイレクトします。
     """
-    selected = json.loads(request.args.get("selected") or "{}")
+    selected_data = json.loads(request.args.get("selected") or "{}")
     movie = Movie()
-    movie.title = selected["title"]
-    movie.year = int(selected["release_date"].split("-")[0])
-    movie.description = selected["overview"]
-    movie.img_url = f"https://image.tmdb.org/t/p/w500{selected['poster_path']}"
+    movie.title = selected_data.get("title")
+    movie.year = int(selected_data.get("release_date", "").split("-")[0]) if selected_data.get("release_date") else 0
+    movie.description = selected_data.get("overview")
+    movie.img_url = f"https://image.tmdb.org/t/p/w500{selected_data.get('poster_path')}" if selected_data.get('poster_path') else ""
     movie.rating = 0.0
     movie.ranking = 0
     movie.review = ""
