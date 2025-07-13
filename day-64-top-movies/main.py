@@ -20,6 +20,10 @@ Bootstrap5(app)
 
 # CREATE DB
 class Base(DeclarativeBase):
+    """
+    SQLAlchemyの宣言的ベースクラス。
+    このクラスを継承することで、モデルクラスがデータベーステーブルにマッピングされます。
+    """
     pass
 
 db = SQLAlchemy(model_class=Base)
@@ -27,6 +31,10 @@ db.init_app(app)
 
 # CREATE TABLE
 class Movie(db.Model):
+    """
+    映画情報を保存するデータベースモデル。
+    各カラムは映画のタイトル、公開年、説明、評価、ランキング、レビュー、画像URLを管理します。
+    """
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     title: Mapped[str] = mapped_column(String, unique=True, nullable=False)
     year: Mapped[int] = mapped_column(Integer, nullable=False)
@@ -37,6 +45,10 @@ class Movie(db.Model):
     img_url: Mapped[str] = mapped_column(String, nullable=False)
 
 def update_ranking():
+    """
+    データベース内の映画のランキングを更新します。
+    映画を評価の高い順に並べ替え、1位から順にランキングを割り当てます。
+    """
     movies = db.session.execute(db.select(Movie).order_by(Movie.rating.desc())).scalars()
     for i, movie in enumerate(movies):
         movie.ranking = i + 1
@@ -48,11 +60,21 @@ with app.app_context():
 
 @app.route("/")
 def home():
+    """
+    ホームページを表示します。
+    データベースから映画をランキング順に取得し、テンプレートに渡して表示します。
+    """
     movies = db.session.execute(db.select(Movie).order_by(Movie.ranking.desc())).scalars()
     return render_template("index.html", movies=movies)
 
 @app.route("/rate", methods=["GET", "POST"])
 def rate():
+    """
+    映画の評価とレビューを更新するページを表示・処理します。
+    GETリクエストでは、選択された映画の現在の評価とレビューをフォームに表示します。
+    POSTリクエストでは、フォームから送信されたデータで映画の評価とレビューを更新し、
+    ランキングを再計算してホームページにリダイレクトします。
+    """
     movie_id = request.args.get('id')
     movie_to_update = db.get_or_404(Movie, movie_id)
     form = RateForm()
@@ -69,6 +91,10 @@ def rate():
 
 @app.route("/delete")
 def delete():
+    """
+    映画をデータベースから削除します。
+    指定されたIDの映画を削除し、ランキングを再計算してホームページにリダイレクトします。
+    """
     movie_id = request.args.get('id')
     movie_to_delete = db.get_or_404(Movie, movie_id)
     db.session.delete(movie_to_delete)
@@ -78,6 +104,12 @@ def delete():
 
 @app.route("/search", methods=["GET", "POST"])
 def search():
+    """
+    映画を検索し、検索結果を表示します。
+    POSTリクエストでは、フォームから送信されたタイトルでThe Movie Database APIを検索し、
+    結果を人気度でソートし、既に保存されている映画を除外して表示します。
+    GETリクエストでは、検索フォームを表示します。
+    """
     form = SearchForm()
     if request.method == "POST" and form.validate_on_submit():
         title = request.form["title"]
@@ -103,6 +135,11 @@ def search():
 
 @app.route("/add")
 def add():
+    """
+    選択された映画をデータベースに追加します。
+    The Movie Database APIから取得した映画情報を使用して新しいMovieオブジェクトを作成し、
+    データベースに保存後、ランキングを再計算し、評価ページにリダイレクトします。
+    """
     selected = json.loads(request.args.get("selected") or "{}")
     movie = Movie()
     movie.title = selected["title"]
