@@ -3,8 +3,11 @@
 {% block title %}My Top 10 Movies{% endblock %}
 
 {% block content %}
-<div class="container">
-  <h1 class="heading">My Top 10 Movies</h1>
+<div class="content">
+  <h1 class="heading">
+    My Top 10 Movies
+    <a href="{{ url_for('search') }}" class="button small">Add Movie</a>
+  </h1>
   <p class="description">These are my all-time favourite movies.</p>
   {% for movie in movies %}
   <div class="card" >
@@ -31,8 +34,4 @@
     </div>
   {% endfor %}
 </div>
-<div class="container text-center add">
-<a href="{{ url_for('search') }}" class="button">Add Movie</a>
-</div>
-
 {% endblock %}
