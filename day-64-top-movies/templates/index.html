@@ -3,7 +3,6 @@
 {% block title %}My Top 10 Movies{% endblock %}
 
 {% block content %}
-<div class="content">
   <h1 class="heading">
     My Top 10 Movies
     <a href="{{ url_for('search') }}" class="button small">Add Movie</a>
@@ -33,5 +32,4 @@
       </div>
     </div>
   {% endfor %}
-</div>
 {% endblock %}

@@ -130,7 +130,7 @@ def search():
         saved_movies = db.session.execute(db.select(Movie).order_by(Movie.ranking.desc())).scalars()
         filtered_data = _filter_saved_movies(data, saved_movies)
         
-        popularity_sorted_data=sorted(filtered_data, key=lambda x: x["popularity"], reverse=True)[:10]
+        popularity_sorted_data=sorted(filtered_data, key=lambda x: x["popularity"] if x.get("popularity") else 0, reverse=True)[:10]
         release_date_sorted_data = sorted(popularity_sorted_data, key=lambda x: x["release_date"])
         return render_template("select.html", options=release_date_sorted_data)
     return render_template("search.html", form=form)
