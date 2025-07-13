@@ -3,14 +3,12 @@ from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import Integer, String, Float
-from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
-from wtforms.validators import DataRequired
 import requests
 from edit_movie import EditMovieForm
-from add_movie import AddMovieForm
+from search_movie import SearchMovieForm
 import os
 from dotenv import load_dotenv
+import json
 
 load_dotenv()
 themoviedbAPITOKEN = os.getenv("themoviedbAPITOKEN")
@@ -77,9 +75,9 @@ def delete():
     update_ranking()
     return redirect(url_for("home"))
 
-@app.route("/add", methods=["GET", "POST"])
-def add():
-    form = AddMovieForm()
+@app.route("/search", methods=["GET", "POST"])
+def search():
+    form = SearchMovieForm()
     if request.method == "POST" and form.validate_on_submit():
         title = request.form["title"]
         headers = {
@@ -94,15 +92,16 @@ def add():
         popularity_sorted_data=sorted(data, key=lambda x: x["popularity"], reverse=True)[:10]
         release_date_sorted_data = sorted(popularity_sorted_data, key=lambda x: x["release_date"])
         return render_template("select.html", options=release_date_sorted_data)
-    return render_template("add.html", form=form)
+    return render_template("search.html", form=form)
 
-@app.route("/add/<title>")
-def add_movie(title):
+@app.route("/add")
+def add():
+    selected = json.loads(request.args.get("selected") or "{}")
     movie = Movie()
-    movie.title = title or "No title"
-    movie.year = int(request.args.get("year") or 0)
-    movie.description = request.args.get("description") or "No description"
-    movie.img_url = request.args.get("img_url") or "No image"
+    movie.title = selected["title"]
+    movie.year = int(selected["release_date"].split("-")[0])
+    movie.description = selected["overview"]
+    movie.img_url = f"https://image.tmdb.org/t/p/w500{selected['poster_path']}"
     movie.rating = 0.0
     movie.ranking = 0
     movie.review = ""
