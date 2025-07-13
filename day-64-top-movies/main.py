@@ -37,13 +37,20 @@ class Movie(db.Model):
     ranking: Mapped[int] = mapped_column(Integer, nullable=False)
     review: Mapped[str] = mapped_column(String, nullable=False)
     img_url: Mapped[str] = mapped_column(String, nullable=False)
+
+def update_ranking():
+    movies = db.session.execute(db.select(Movie).order_by(Movie.rating.desc())).scalars()
+    for i, movie in enumerate(movies):
+        movie.ranking = i + 1
+    db.session.commit()
     
 with app.app_context():
     db.create_all()
+    update_ranking()
 
 @app.route("/")
 def home():
-    return render_template("index.html", movies=db.session.execute(db.select(Movie).order_by(Movie.rating)).scalars())
+    return render_template("index.html", movies=db.session.execute(db.select(Movie).order_by(Movie.ranking.desc())).scalars())
 
 @app.route("/edit", methods=["GET", "POST"])
 def edit():
@@ -54,11 +61,14 @@ def edit():
         movie_to_update.rating = float(request.form["rating"])
         movie_to_update.review = request.form["review"]
         db.session.commit()
+        update_ranking()
         return redirect(url_for("home"))
     movie_id = request.args.get('id')
     movie_selected = db.get_or_404(Movie, movie_id)
     form.id.data = str(movie_selected.id)
     movie_title = movie_selected.title
+    form.rating.data = movie_selected.rating
+    form.review.data = movie_selected.review
     return render_template("edit.html", form=form, title=movie_title)
 
 @app.route("/delete")
@@ -67,6 +77,7 @@ def delete():
     movie_to_delete = db.get_or_404(Movie, movie_id)
     db.session.delete(movie_to_delete)
     db.session.commit()
+    update_ranking()
     return redirect(url_for("home"))
 
 @app.route("/add", methods=["GET", "POST"])
@@ -100,6 +111,7 @@ def add_movie(title):
     movie.review = ""
     db.session.add(movie)
     db.session.commit()
+    update_ranking()
     return redirect(url_for("edit", id=movie.id))
 
 if __name__ == '__main__':
