@@ -6,7 +6,13 @@
 <div class="container">
     <h1 class="heading">Select Movie</h1>
   <p>
-    <a href="#"> MOVIE TITLE - MOVIE RELEASE DATE</a>
+    {% for option in options %}
+    <p>
+    {% set img_url = "https://image.tmdb.org/t/p/w500" + option.poster_path %}
+    {% set year = option.release_date.split("-")[0] %}
+    <a href="{{ url_for('add_movie', title=option.title, year=year, description=option.overview, img_url=img_url) }}"> {{ option.title }} - {{ year }}</a>
+    </p>
+    {% endfor %}
   </p>
 
 </div>

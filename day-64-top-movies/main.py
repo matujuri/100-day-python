@@ -81,9 +81,25 @@ def add():
         }
         response = requests.get("https://api.themoviedb.org/3/search/movie", headers=headers, params=body)
         response.raise_for_status()
-        data = response.json()
-        return render_template("select.html", options=data["results"][:10])
+        data = response.json()["results"]
+        popularity_sorted_data=sorted(data, key=lambda x: x["popularity"], reverse=True)[:10]
+        release_date_sorted_data = sorted(popularity_sorted_data, key=lambda x: x["release_date"])
+        return render_template("select.html", options=release_date_sorted_data)
     return render_template("add.html", form=form)
+
+@app.route("/add/<title>")
+def add_movie(title):
+    movie = Movie()
+    movie.title = title or "No title"
+    movie.year = int(request.args.get("year") or 0)
+    movie.description = request.args.get("description") or "No description"
+    movie.img_url = request.args.get("img_url") or "No image"
+    movie.rating = 0.0
+    movie.ranking = 0
+    movie.review = ""
+    db.session.add(movie)
+    db.session.commit()
+    return redirect(url_for("home"))
 
 if __name__ == '__main__':
     app.run(debug=True)
