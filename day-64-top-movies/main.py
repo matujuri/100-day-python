@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 import json
 
 load_dotenv()
-themoviedbAPITOKEN = os.getenv("themoviedbAPITOKEN")
+TMDB_API_TOKEN = os.getenv("TMDB_API_TOKEN")
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
@@ -114,7 +114,7 @@ def search():
     if request.method == "POST" and form.validate_on_submit():
         title = request.form["title"]
         headers = {
-            "Authorization": f"Bearer {themoviedbAPITOKEN}"
+            "Authorization": f"Bearer {TMDB_API_TOKEN}"
         }
         body = {
             "query": title
