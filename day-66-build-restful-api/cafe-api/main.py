@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import Integer, String, Boolean
 import os
-
+import random
 '''
 Install the required packages first: 
 Open the Terminal in PyCharm (bottom left). 
@@ -41,6 +41,22 @@ class Cafe(db.Model):
     has_sockets: Mapped[bool] = mapped_column(Boolean, nullable=False)
     can_take_calls: Mapped[bool] = mapped_column(Boolean, nullable=False)
     coffee_price: Mapped[str] = mapped_column(String(250), nullable=True)
+    
+    def to_dict(self):
+        return {
+            "name": self.name,
+            "map_url": self.map_url,
+            "img_url": self.img_url,
+            "location": self.location,
+            "amenities": {
+                "seats": self.seats,
+                "has_toilet": self.has_toilet,
+                "has_wifi": self.has_wifi,
+                "has_sockets": self.has_sockets,
+                "can_take_calls": self.can_take_calls,
+                "coffee_price": self.coffee_price,
+            }
+        }
 
 
 with app.app_context():
@@ -50,6 +66,12 @@ with app.app_context():
 @app.route("/")
 def home():
     return render_template("index.html")
+
+@app.route("/random")
+def get_random_cafe():
+    cafes = db.session.execute(db.select(Cafe)).scalars().all()
+    random_cafe = random.choice(cafes).to_dict()
+    return jsonify(cafe=random_cafe)
 
 
 # HTTP GET - Read Record
