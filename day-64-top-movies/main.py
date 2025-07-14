@@ -15,7 +15,7 @@ TMDB_API_TOKEN = os.getenv("TMDB_API_TOKEN")
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
-app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{os.path.abspath(os.path.join(os.path.dirname(__file__), 'movies.db'))}"
+app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{os.path.join(os.path.dirname(__file__), 'movies.db')}"
 Bootstrap5(app)
 
 # CREATE DB
