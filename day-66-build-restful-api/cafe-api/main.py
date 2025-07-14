@@ -43,21 +43,7 @@ class Cafe(db.Model):
     coffee_price: Mapped[str] = mapped_column(String(250), nullable=True)
     
     def to_dict(self):
-        return {
-            "name": self.name,
-            "map_url": self.map_url,
-            "img_url": self.img_url,
-            "location": self.location,
-            "amenities": {
-                "seats": self.seats,
-                "has_toilet": self.has_toilet,
-                "has_wifi": self.has_wifi,
-                "has_sockets": self.has_sockets,
-                "can_take_calls": self.can_take_calls,
-                "coffee_price": self.coffee_price,
-            }
-        }
-
+        return {column.name: getattr(self, column.name) for column in self.__table__.columns} # type: ignore[attr-defined]
 
 with app.app_context():
     db.create_all()
