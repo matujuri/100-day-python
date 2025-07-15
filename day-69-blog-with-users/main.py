@@ -10,7 +10,7 @@ from functools import wraps
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 # Import your forms from the forms.py
-from forms import CreatePostForm, RegisterForm
+from forms import CreatePostForm, RegisterForm, LoginForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
@@ -68,11 +68,16 @@ def register():
         return redirect(url_for("get_all_posts"))
     return render_template("register.html", form=form)
 
-
-# TODO: Retrieve a user from the database based on their email. 
-@app.route('/login')
+@app.route('/login', methods=["GET", "POST"])
 def login():
-    return render_template("login.html")
+    form = LoginForm()
+    if request.method == "POST" and form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data or '').first()
+        if user and check_password_hash(user.password, form.password.data or ''):
+            return redirect(url_for("get_all_posts"))
+        else:
+            flash("Invalid credentials")
+    return render_template("login.html", form=form)
 
 
 @app.route('/logout')
