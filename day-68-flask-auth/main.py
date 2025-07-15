@@ -55,8 +55,16 @@ def register():
     return render_template("register.html")
 
 
-@app.route('/login')
+@app.route('/login', methods=["GET", "POST"])
 def login():
+    if request.method == "POST":
+        user = User.query.filter_by(email=request.form.get("email")).first()
+        if user and check_password_hash(user.password, request.form.get("password") or ''):
+            login_user(user)
+            return redirect(url_for("secrets"))
+        else:
+            error = "Invalid credentials"
+            return render_template("login.html", error=error)
     return render_template("login.html")
 
 
