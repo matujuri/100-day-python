@@ -1,5 +1,5 @@
 from datetime import date
-from flask import Flask, abort, render_template, redirect, url_for, flash
+from flask import Flask, abort, render_template, redirect, url_for, flash, request
 from flask_bootstrap import Bootstrap5
 from flask_ckeditor import CKEditor
 from flask_login import UserMixin, login_user, LoginManager, current_user, logout_user
@@ -10,7 +10,7 @@ from functools import wraps
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 # Import your forms from the forms.py
-from forms import CreatePostForm
+from forms import CreatePostForm, RegisterForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
@@ -50,11 +50,23 @@ class User(db.Model):
 with app.app_context():
     db.create_all()
 
-
-# TODO: Use Werkzeug to hash the user's password when creating a new user.
-@app.route('/register')
+@app.route('/register', methods=["GET", "POST"])
 def register():
-    return render_template("register.html")
+    form = RegisterForm()
+    if request.method == "POST" and form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data or '').first()
+        if user:
+            flash("You've already signed up with that email, please log in instead!")
+            return redirect(url_for("login"))
+        new_user = User(
+            email=form.email.data or '',
+            password=generate_password_hash(form.password.data or '', method="pbkdf2:sha256", salt_length=8),
+            name=form.name.data or ''
+        )
+        db.session.add(new_user)
+        db.session.commit()
+        return redirect(url_for("get_all_posts"))
+    return render_template("register.html", form=form)
 
 
 # TODO: Retrieve a user from the database based on their email. 
