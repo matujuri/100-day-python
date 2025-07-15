@@ -17,8 +17,12 @@ app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
 ckeditor = CKEditor(app)
 Bootstrap5(app)
 
-# TODO: Configure Flask-Login
+login_manager = LoginManager()
+login_manager.init_app(app)
 
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 # CREATE DATABASE
 class Base(DeclarativeBase):
@@ -40,7 +44,7 @@ class BlogPost(db.Model):
     img_url: Mapped[str] = mapped_column(String(250), nullable=False)
 
 
-class User(db.Model):
+class User(db.Model, UserMixin):
     __tablename__ = "users"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     email: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
@@ -65,6 +69,7 @@ def register():
         )
         db.session.add(new_user)
         db.session.commit()
+        login_user(new_user)
         return redirect(url_for("get_all_posts"))
     return render_template("register.html", form=form)
 
@@ -74,6 +79,7 @@ def login():
     if request.method == "POST" and form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data or '').first()
         if user and check_password_hash(user.password, form.password.data or ''):
+            login_user(user)
             return redirect(url_for("get_all_posts"))
         else:
             flash("Invalid credentials")
@@ -82,6 +88,7 @@ def login():
 
 @app.route('/logout')
 def logout():
+    logout_user()
     return redirect(url_for('get_all_posts'))
 
 
