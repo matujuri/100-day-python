@@ -43,6 +43,10 @@ def home():
 @app.route('/register', methods=["GET", "POST"])
 def register():
     if request.method == "POST":
+        user = User.query.filter_by(email=request.form.get("email")).first()
+        if user:
+            flash("You've already signed up with that email, please log in instead!")
+            return redirect(url_for("login"))
         new_user = User(
             email=request.form.get("email") or '',
             password=generate_password_hash(request.form.get("password") or '', method="pbkdf2:sha256", salt_length=8),
@@ -59,12 +63,11 @@ def register():
 def login():
     if request.method == "POST":
         user = User.query.filter_by(email=request.form.get("email")).first()
-        if user and check_password_hash(user.password, request.form.get("password") or ''):
-            login_user(user)
-            return redirect(url_for("secrets"))
-        else:
-            error = "Invalid credentials"
-            return render_template("login.html", error=error)
+        if not user or not check_password_hash(user.password, request.form.get("password") or ''):
+            flash("Invalid credentials")
+            return render_template("login.html")
+        login_user(user)
+        return redirect(url_for("secrets"))
     return render_template("login.html")
 
 
