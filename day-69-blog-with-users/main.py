@@ -1,7 +1,6 @@
 from datetime import date
 from flask import Flask, abort, render_template, redirect, url_for, flash, request
 from flask_bootstrap import Bootstrap5
-from flask_ckeditor import CKEditor
 from flask_login import UserMixin, login_user, LoginManager, current_user, logout_user, login_required
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship, DeclarativeBase, Mapped, mapped_column
@@ -14,7 +13,6 @@ from forms import CreatePostForm, RegisterForm, LoginForm, CommentForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
-ckeditor = CKEditor(app)
 Bootstrap5(app)
 
 login_manager = LoginManager()
@@ -72,8 +70,7 @@ with app.app_context():
 def admin_only(func):
     @wraps(func) # エンドポイントのオリジナルの関数名を保持させる
     def wrapper(*args, **kwargs):
-        print(current_user.id)
-        if current_user.id != 1:
+        if current_user.is_authenticated == False or current_user.id != 1:
             return abort(403)
         return func(*args, **kwargs)
     return wrapper
@@ -142,7 +139,7 @@ def add_comment(post_id):
 @admin_only
 def add_new_post():
     form = CreatePostForm()
-    if form.validate_on_submit():
+    if request.method == "POST" and form.validate_on_submit():
         new_post = BlogPost(
             title=form.title.data or '',
             subtitle=form.subtitle.data or '',
