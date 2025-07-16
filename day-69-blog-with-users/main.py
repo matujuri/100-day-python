@@ -53,6 +53,16 @@ class User(db.Model, UserMixin):
 
 with app.app_context():
     db.create_all()
+    
+# 管理者のみがアクセスできるようにするデコレーター
+def admin_only(func):
+    @wraps(func) # エンドポイントのオリジナルの関数名を保持させる
+    def wrapper(*args, **kwargs):
+        print(current_user.id)
+        if current_user.id != 1:
+            return abort(403)
+        return func(*args, **kwargs)
+    return wrapper
 
 @app.route('/register', methods=["GET", "POST"])
 def register():
@@ -105,9 +115,8 @@ def show_post(post_id):
     requested_post = db.get_or_404(BlogPost, post_id)
     return render_template("post.html", post=requested_post)
 
-
-# TODO: Use a decorator so only an admin user can create a new post
 @app.route("/new-post", methods=["GET", "POST"])
+@admin_only
 def add_new_post():
     form = CreatePostForm()
     if form.validate_on_submit():
@@ -124,9 +133,8 @@ def add_new_post():
         return redirect(url_for("get_all_posts"))
     return render_template("make-post.html", form=form)
 
-
-# TODO: Use a decorator so only an admin user can edit a post
 @app.route("/edit-post/<int:post_id>", methods=["GET", "POST"])
+@admin_only
 def edit_post(post_id):
     post = db.get_or_404(BlogPost, post_id)
     edit_form = CreatePostForm(
@@ -146,9 +154,8 @@ def edit_post(post_id):
         return redirect(url_for("show_post", post_id=post.id))
     return render_template("make-post.html", form=edit_form, is_edit=True)
 
-
-# TODO: Use a decorator so only an admin user can delete a post
 @app.route("/delete/<int:post_id>")
+@admin_only
 def delete_post(post_id):
     post_to_delete = db.get_or_404(BlogPost, post_id)
     db.session.delete(post_to_delete)
