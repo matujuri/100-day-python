@@ -5,7 +5,7 @@ from flask_ckeditor import CKEditor
 from flask_login import UserMixin, login_user, LoginManager, current_user, logout_user
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship, DeclarativeBase, Mapped, mapped_column
-from sqlalchemy import Integer, String, Text
+from sqlalchemy import ForeignKey, Integer, String, Text
 from functools import wraps
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
@@ -33,15 +33,6 @@ db.init_app(app)
 
 
 # CONFIGURE TABLES
-class BlogPost(db.Model):
-    __tablename__ = "blog_posts"
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    title: Mapped[str] = mapped_column(String(250), unique=True, nullable=False)
-    subtitle: Mapped[str] = mapped_column(String(250), nullable=False)
-    date: Mapped[str] = mapped_column(String(250), nullable=False)
-    body: Mapped[str] = mapped_column(Text, nullable=False)
-    author: Mapped[str] = mapped_column(String(250), nullable=False)
-    img_url: Mapped[str] = mapped_column(String(250), nullable=False)
 
 
 class User(db.Model, UserMixin):
@@ -50,6 +41,18 @@ class User(db.Model, UserMixin):
     email: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(String(100), nullable=False)
     name: Mapped[str] = mapped_column(String(100), nullable=False)
+    posts = relationship("BlogPost", back_populates="author")
+
+class BlogPost(db.Model):
+    __tablename__ = "blog_posts"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    title: Mapped[str] = mapped_column(String(250), unique=True, nullable=False)
+    subtitle: Mapped[str] = mapped_column(String(250), nullable=False)
+    date: Mapped[str] = mapped_column(String(250), nullable=False)
+    body: Mapped[str] = mapped_column(Text, nullable=False)
+    img_url: Mapped[str] = mapped_column(String(250), nullable=False)
+    author_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    author: Mapped["User"] = relationship(back_populates="posts")
 
 with app.app_context():
     db.create_all()
