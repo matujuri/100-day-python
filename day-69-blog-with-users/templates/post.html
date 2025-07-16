@@ -11,7 +11,7 @@
           <h2 class="subheading">{{ post.subtitle }}</h2>
           <span class="meta"
             >Posted by
-            <a href="#">{{ post.author }}</a>
+            <a href="#">{{ post.author.name }}</a>
             on {{ post.date }}
           </span>
         </div>
@@ -35,6 +35,9 @@
           >
         </div>
         {% endif %}
+
+        {% if current_user.is_authenticated: %}
+        <hr>
         <!-- Comments Area -->
         <div class="comment">
           {{ ckeditor.load() }} {{ ckeditor.config(name='comment') }}
@@ -53,6 +56,7 @@
             {% endfor %}
           </ul>
         </div>
+        {% endif %}
       </div>
     </div>
   </div>
