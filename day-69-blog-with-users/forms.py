@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, PasswordField, TextAreaField
 from wtforms.validators import DataRequired, URL
+from flask_quill.fields import QuillField
 
 
 # WTForm for creating a blog post
@@ -8,7 +9,7 @@ class CreatePostForm(FlaskForm):
     title = StringField("Blog Post Title", validators=[DataRequired()])
     subtitle = StringField("Subtitle", validators=[DataRequired()])
     img_url = StringField("Blog Image URL", validators=[DataRequired(), URL()])
-    body = TextAreaField("Blog Content", validators=[DataRequired()])
+    body = QuillField("Blog Content", validators=[DataRequired()])
     submit = SubmitField("Submit Post")
 
 class RegisterForm(FlaskForm):
@@ -23,5 +24,5 @@ class LoginForm(FlaskForm):
     submit = SubmitField("Login")
 
 class CommentForm(FlaskForm):
-    comment = TextAreaField("Comment", validators=[DataRequired()])
+    comment = QuillField("Comment", validators=[DataRequired()])
     submit = SubmitField("Submit Comment")

@@ -40,6 +40,7 @@
         <hr>
         <!-- Comments Area -->
         <div class="comment">
+          {{ quill.load() }} {{ quill.config(name="comment") }}
           {{render_form(form, novalidate=True, button_map={"submit": "primary"}, action=url_for('add_comment', post_id=post.id))}}
           <ul class="commentList">
             {% for comment in post.comments: %}
@@ -60,34 +61,4 @@
     </div>
   </div>
 </article>
-
-<link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
-<script>
-  var commentQuill;
-
-  var commentForm = document.querySelector("form");
-  var originalCommentTextArea = document.querySelector("textarea#comment");
-
-  if (originalCommentTextArea) {
-    originalCommentTextArea.style.display = "none";
-    originalCommentTextArea.removeAttribute("required");
-    // Quillエディタのdivを作成し、元のtextareaの直前に挿入
-    var quillEditorDiv = document.createElement("div");
-    quillEditorDiv.id = "quill-container"; // 新しいユニークなID
-    quillEditorDiv.style.height = "150px";
-    originalCommentTextArea.parentNode.insertBefore(quillEditorDiv, originalCommentTextArea);
-    commentQuill = new Quill(quillEditorDiv, {
-      theme: "snow",
-    });
-    commentQuill.root.innerHTML = originalCommentTextArea.value;
-  }
-
-  commentForm.onsubmit = function () {
-    if (originalCommentTextArea) {
-      originalCommentTextArea.value = commentQuill.root.innerHTML;
-    }
-  };
-</script>
-
 {% include "footer.html" %}
