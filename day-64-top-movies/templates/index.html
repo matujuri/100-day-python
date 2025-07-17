@@ -2,6 +2,7 @@
 
 {% block content %}
 {% if current_user.is_authenticated %}
+<h1>Welcome, {{ current_user.name }}!</h1>
 <a href="{{ url_for('movies') }}" class="btn btn-primary">Go to Movies</a>
 {% else %}
 <p>login or register to record and rate your favorite movies</p>
