@@ -77,18 +77,10 @@
           <ul class="navbar-nav ms-auto py-4 py-lg-0">
             {% if not current_user.is_authenticated: %}
             <li class="nav-item">
-              <a
-                class="nav-link"
-                href="{{ url_for('login') }}"
-                >ログイン</a
-              >
+              <a class="nav-link" href="{{ url_for('login') }}">ログイン</a>
             </li>
             <li class="nav-item">
-              <a
-                class="nav-link"
-                href="{{ url_for('register') }}"
-                >登録</a
-              >
+              <a class="nav-link" href="{{ url_for('register') }}">登録</a>
             </li>
             {% else %}
             <li class="nav-item">
@@ -116,6 +108,45 @@
       </div>
     </nav>
     {% block content %}{% endblock %}
+    <div class="container">
+      <footer
+        class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top"
+      >
+        <div class="col-md-4 d-flex align-items-center">
+          <a
+            href="/"
+            class="mb-3 me-2 mb-md-0 text-body-secondary text-decoration-none lh-1"
+            aria-label="Bootstrap"
+          >
+            <svg class="bi" width="30" height="24" aria-hidden="true">
+              <use xlink:href="#bootstrap"></use>
+            </svg>
+          </a>
+          <span class="mb-3 mb-md-0 text-body-secondary">
+            小河合 2025
+            <a
+              class="text-body-secondary"
+              href="https://x.com/6DVpmYBVT846778"
+              aria-label="Twitter"
+              style="margin-left: 10px"
+              ><svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-twitter-x"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z"
+                />
+                <use xlink:href="#x"></use>
+              </svg>
+            </a>
+          </span>
+        </div>
+      </footer>
+    </div>
   </body>
   {{ bootstrap.load_js() }}
 </html>

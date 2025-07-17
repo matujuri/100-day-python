@@ -12,9 +12,26 @@
         <div class="col-10 col-sm-8 col-lg-6" style="margin: 0 auto">
           <div id="carouselExample" class="carousel slide">
             <div class="carousel-indicators">
-                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+              <button
+                type="button"
+                data-bs-target="#carouselExampleIndicators"
+                data-bs-slide-to="0"
+                class="active"
+                aria-current="true"
+                aria-label="Slide 1"
+              ></button>
+              <button
+                type="button"
+                data-bs-target="#carouselExampleIndicators"
+                data-bs-slide-to="1"
+                aria-label="Slide 2"
+              ></button>
+              <button
+                type="button"
+                data-bs-target="#carouselExampleIndicators"
+                data-bs-slide-to="2"
+                aria-label="Slide 3"
+              ></button>
             </div>
             <div class="carousel-inner">
               <div class="carousel-item active">
@@ -57,8 +74,8 @@
                   <div
                     class="front"
                     style="
-                background-image: url('https://image.tmdb.org/t/p/w500/e5lkke4fKEZNfl28gCOe6MrAjhA.jpg');
-              "
+                      background-image: url('https://image.tmdb.org/t/p/w500/e5lkke4fKEZNfl28gCOe6MrAjhA.jpg');
+                    "
                   >
                     <p class="large">1</p>
                   </div>
@@ -73,7 +90,16 @@
                         <i class="fas fa-star star"></i>
                       </div>
                       <p class="review">あなたのコメント</p>
-                      <p class="overview">Hiroko attends the memorial service of her fiancé, Itsuki Fujii, who died in a mountain-climbing incident. Although Itsuki's mother says that their old house is gone, Hiroko records the address listed under his name in his yearbook and sends him a letter. Surprisingly, she receives a reply, and discovers it came from his old classmate, a girl who also happens to be called Itsuki Fujii.</p>
+                      <p class="overview">
+                        Hiroko attends the memorial service of her fiancé,
+                        Itsuki Fujii, who died in a mountain-climbing incident.
+                        Although Itsuki's mother says that their old house is
+                        gone, Hiroko records the address listed under his name
+                        in his yearbook and sends him a letter. Surprisingly,
+                        she receives a reply, and discovers it came from his old
+                        classmate, a girl who also happens to be called Itsuki
+                        Fujii.
+                      </p>
 
                       <a href="#" class="button">評価</a>
                       <a href="#" class="button delete-button">削除</a>
@@ -89,8 +115,8 @@
                   <div
                     class="front"
                     style="
-                background-image: url('https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg');
-              "
+                      background-image: url('https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg');
+                    "
                   >
                     <p class="large">1</p>
                   </div>
@@ -105,7 +131,16 @@
                         <i class="fas fa-star star"></i>
                       </div>
                       <p class="review">あなたのコメント</p>
-                      <p class="overview">Batman raises the stakes in his war on crime. With the help of Lt. Jim Gordon and District Attorney Harvey Dent, Batman sets out to dismantle the remaining criminal organizations that plague the streets. The partnership proves to be effective, but they soon find themselves prey to a reign of chaos unleashed by a rising criminal mastermind known to the terrified citizens of Gotham as the Joker.</p>
+                      <p class="overview">
+                        Batman raises the stakes in his war on crime. With the
+                        help of Lt. Jim Gordon and District Attorney Harvey
+                        Dent, Batman sets out to dismantle the remaining
+                        criminal organizations that plague the streets. The
+                        partnership proves to be effective, but they soon find
+                        themselves prey to a reign of chaos unleashed by a
+                        rising criminal mastermind known to the terrified
+                        citizens of Gotham as the Joker.
+                      </p>
 
                       <a href="#" class="button">評価</a>
                       <a href="#" class="button delete-button">削除</a>
@@ -121,7 +156,7 @@
               data-bs-slide="next"
             >
               <span class="visually-hidden">Next</span>
-              <p style="color: black;">→</p>
+              <p style="color: black">→</p>
             </button>
           </div>
         </div>
@@ -147,10 +182,12 @@
 
   <!-- hero section -->
   <section id="hero">
-    <div class="container" style="padding: 40px">
-      <h1 style="font-size: 30px; font-weight: bold;">
-        あなたのリストのために、映画を追加しよう！
-        <a href="{{ url_for('register') }}" class="btn btn-primary">無料で始める</a>
+    <div class="container" style="padding-top: 40px">
+      <h1 style="font-size: 30px; font-weight: bold">
+        あなたのリストに、映画を追加しよう！
+        <a href="{{ url_for('register') }}" class="btn btn-primary"
+          >無料で始める</a
+        >
       </h1>
       <div class="row">
         <div class="col">
