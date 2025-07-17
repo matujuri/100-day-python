@@ -98,7 +98,7 @@ def register():
         db.session.add(new_user)
         db.session.commit()
         login_user(new_user)
-        return redirect(url_for("home"))
+        return redirect(url_for("movies"))
     return render_template("register.html", form=form)
 
 @app.route("/login", methods=["GET", "POST"])
@@ -125,7 +125,7 @@ def movies():
     ホームページを表示します。
     データベースから映画をランキング順に取得し、テンプレートに渡して表示します。
     """
-    movies = db.session.execute(db.select(Movie).where(Movie.user_id == current_user.id).order_by(Movie.ranking.desc())).scalars()
+    movies = db.session.execute(db.select(Movie).where(Movie.user_id == current_user.id).order_by(Movie.ranking.desc())).scalars().all()
     return render_template("movies.html", movies=movies)
 
 @app.route("/rate", methods=["GET", "POST"])
