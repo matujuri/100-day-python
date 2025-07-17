@@ -5,53 +5,89 @@
   <a href="{{ url_for('movies') }}" class="btn btn-primary">映画一覧へ</a>
   {% else %}
 
+  <!-- feature section -->
+  <section id="feature" style="background-color: #f0f0f0">
+    <div class="container p3">
+      <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+        <div class="col-10 col-sm-8 col-lg-6">
+          <div class="card" style="width: 300px; height: 500px; margin: 0 auto">
+            <div
+              class="front"
+              style="
+                background-image: url('{{ movie.img_url }}');
+              "
+            >
+              <p class="large">1</p>
+            </div>
+            <div class="back">
+              <div>
+                <div class="title">
+                  {{ movie.title }}
+                  <span class="release_date">({{ movie.year }})</span>
+                </div>
+                <div class="rating">
+                  <label>あなたの点数</label>
+                  <i class="fas fa-star star"></i>
+                </div>
+                <p class="review">あなたのコメント</p>
+                <p class="overview">{{ movie.description }}</p>
+
+                <a href="#" class="button">評価</a>
+                <a href="#" class="button delete-button">削除</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3">
+            「推し映画」を
+          </h1>
+          <ul class="lead">
+            <li>映画タイトルを検索して、ワンクリックで追加</li>
+            <li>あなたの評価で自動的にランキング化</li>
+            <li>視覚でわかる！オリジナル映画カードも作成</li>
+          </ul>
+          <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <span
+              style="font-size: 30px; font-weight: bold"
+              >まずは、気になる映画を🔍
+            </span>
+            <a href="{{ url_for('search') }}" class="btn btn-primary">検索</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- hero section -->
-  <div class="container pt-3 pb-5">
+  <section id="hero">
+  <div class="container p-5">
     <div class="row">
-        <div class="col">
-        <img src="https://image.tmdb.org/t/p/w500/5lUmWTGkEcYnXujixXn31o9q2T0.jpg" alt="na ta2" class="img-fluid">
-        </div>
-        <div class="col">
-        <img src="https://image.tmdb.org/t/p/w500/ulzhLuWrPK07P1YkdWQLZnQh1JL.jpg" alt="Avengers" class="img-fluid">
-        </div>
-        <div class="col">
-        <img src="https://image.tmdb.org/t/p/w500/ygGmAO60t8GyqUo9xYeYxSZAR3b.jpg" alt="how to train your dragon" class="img-fluid">
-        </div>
-    </div>
-  </div>
-
-  
-  <p>このような映画カードが作れます。あなたが付けた点数で映画をランキングします。</p>
-  <p>
-    他の映画データも検索で簡単に追加できます。
-    <a href="{{ url_for('search') }}" class="btn btn-primary">検索</a>
-  </p>
-  <div class="card" style="width: 300px; height: 500px; margin: 0 auto">
-    <div
-      class="front"
-      style="
-        background-image: url('{{ movie.img_url }}');
-      "
-    >
-      <p class="large">1</p>
-    </div>
-    <div class="back">
-      <div>
-        <div class="title">
-          {{ movie.title }} <span class="release_date">({{ movie.year }})</span>
-        </div>
-        <div class="rating">
-          <label>あなたの点数</label>
-          <i class="fas fa-star star"></i>
-        </div>
-        <p class="review">あなたのコメント</p>
-        <p class="overview">{{ movie.description }}</p>
-
-        <a href="#" class="button">評価</a>
-        <a href="#" class="button delete-button">削除</a>
+      <div class="col">
+        <img
+          src="https://image.tmdb.org/t/p/w500/5lUmWTGkEcYnXujixXn31o9q2T0.jpg"
+          alt="na ta2"
+          class="img-fluid"
+        />
+      </div>
+      <div class="col">
+        <img
+          src="https://image.tmdb.org/t/p/w500/ulzhLuWrPK07P1YkdWQLZnQh1JL.jpg"
+          alt="Avengers"
+          class="img-fluid"
+        />
+      </div>
+      <div class="col">
+        <img
+          src="https://image.tmdb.org/t/p/w500/ygGmAO60t8GyqUo9xYeYxSZAR3b.jpg"
+          alt="how to train your dragon"
+          class="img-fluid"
+        />
       </div>
     </div>
   </div>
+  </section>
+  
   {% endif %}
 </div>
 {% endblock %}
