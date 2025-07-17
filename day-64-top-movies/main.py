@@ -47,11 +47,11 @@ class Movie(db.Model):
     title: Mapped[str] = mapped_column(String, unique=True, nullable=False)
     year: Mapped[int] = mapped_column(Integer, nullable=False)
     description: Mapped[str] = mapped_column(String, nullable=False)
-    rating: Mapped[float] = mapped_column(Float, nullable=False)
-    ranking: Mapped[int] = mapped_column(Integer, nullable=False)
-    review: Mapped[str] = mapped_column(String, nullable=False)
+    rating: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
+    ranking: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    review: Mapped[str] = mapped_column(String, nullable=False, default="")
     img_url: Mapped[str] = mapped_column(String, nullable=False)
-    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"))
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), default=0)
     user: Mapped["User"] = relationship(back_populates="movies")
     
 class User(UserMixin, db.Model):
@@ -77,7 +77,15 @@ with app.app_context():
 
 @app.route("/")
 def home():
-    return render_template("index.html")
+    if current_user.is_authenticated:
+        return redirect(url_for("movies"))
+    else:   
+        movie = Movie()
+        movie.title = "CODA"
+        movie.year = 2021
+        movie.description = "As a CODA (Child of Deaf Adults), Ruby is the only hearing person in her deaf family. When the family's fishing business is threatened, Ruby finds herself torn between pursuing her love of music and her fear of abandoning her parents."
+        movie.img_url = "https://image.tmdb.org/t/p/w500/BzVjmm8l23rPsijLiNLUzuQtyd.jpg"
+        return render_template("index.html", movie=movie)
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -162,7 +170,6 @@ def _filter_saved_movies(search_results, saved_movies):
         return [item for item in search_results if item["title"] not in saved_titles]
 
 @app.route("/search", methods=["GET", "POST"])
-@login_required
 def search():
     """
     映画を検索し、検索結果を表示します。
@@ -183,8 +190,11 @@ def search():
         response.raise_for_status()
         data = response.json()["results"]
         
-        saved_movies = db.session.execute(db.select(Movie).where(Movie.user_id == current_user.id).order_by(Movie.ranking.desc())).scalars()
-        filtered_data = _filter_saved_movies(data, saved_movies)
+        if current_user.is_authenticated:
+            saved_movies = db.session.execute(db.select(Movie).where(Movie.user_id == current_user.id).order_by(Movie.ranking.desc())).scalars()
+            filtered_data = _filter_saved_movies(data, saved_movies)
+        else:
+            filtered_data = data
         
         popularity_sorted_data=sorted(filtered_data, key=lambda x: x["popularity"] if x.get("popularity") else 0, reverse=True)[:10]
         release_date_sorted_data = sorted(popularity_sorted_data, key=lambda x: x["release_date"])
@@ -205,14 +215,22 @@ def add():
     movie.year = int(selected_data.get("release_date", "").split("-")[0]) if selected_data.get("release_date") else 0
     movie.description = selected_data.get("overview")
     movie.img_url = f"https://image.tmdb.org/t/p/w500{selected_data.get('poster_path')}" if selected_data.get('poster_path') else ""
-    movie.rating = 0.0
-    movie.ranking = 0
-    movie.review = ""
     movie.user_id = current_user.id
     db.session.add(movie)
     db.session.commit()
     update_ranking()
     return redirect(url_for("rate", id=movie.id))
+
+@app.route("/make_card_for_example")
+def make_card_for_example():
+    selected_data = json.loads(request.args.get("selected") or "{}")
+    movie = Movie()
+    movie.title = selected_data.get("title")
+    movie.year = int(selected_data.get("release_date", "").split("-")[0]) if selected_data.get("release_date") else 0
+    movie.description = selected_data.get("overview")
+    movie.img_url = f"https://image.tmdb.org/t/p/w500{selected_data.get('poster_path')}" if selected_data.get('poster_path') else ""
+    print(movie.title)
+    return render_template("index.html", movie=movie)
 
 if __name__ == '__main__':
     app.run(debug=True)

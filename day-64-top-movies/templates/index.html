@@ -1,14 +1,41 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% block content %}
+<div style="text-align: center">
+  {% if current_user.is_authenticated %}
+  <h1>Welcome, {{ current_user.name }}!</h1>
+  <a href="{{ url_for('movies') }}" class="btn btn-primary">Go to Movies</a>
+  {% else %}
+  <p>Make your own top movies cards, like this one!</p>
+  <p>The rate and review is decided by you! And we rank the movies by the rate you give.</p>
+  <div class="card" style="width: 300px; height: 500px; margin: 0 auto;">
+    <div
+      class="front"
+      style="
+        background-image: url('{{ movie.img_url }}');
+      "
+    >
+      <p class="large">1</p>
+    </div>
+    <div class="back">
+      <div>
+        <div class="title">{{ movie.title }} <span class="release_date">({{ movie.year }})</span></div>
+        <div class="rating">
+          <label>点数を入力</label>
+          <i class="fas fa-star star"></i>
+        </div>
+        <p class="review">
+          コメントを入力
+        </p>
+        <p class="overview">
+          {{ movie.description }}
+        </p>
 
-{% block content %}
-<div style="text-align: center;">
-{% if current_user.is_authenticated %}
-<h1>Welcome, {{ current_user.name }}!</h1>
-<a href="{{ url_for('movies') }}" class="btn btn-primary">Go to Movies</a>
-{% else %}
-<p>login or register to record and rate your favorite movies</p>
-<a href="{{ url_for('login') }}" class="btn btn-primary">Login</a>
-<a href="{{ url_for('register') }}" class="btn btn-primary">Register</a>
-{% endif %}
+        <a href="#" class="button">Rate</a>
+        <a href="#" class="button delete-button">Delete</a>
+      </div>
+    </div>
+  </div>
+  <p>The other movie data is added easily by searching. Try to make your own!</p>
+  <a href="{{ url_for('search') }}" class="btn btn-primary">Search</a>
+  {% endif %}
 </div>
 {% endblock %}
