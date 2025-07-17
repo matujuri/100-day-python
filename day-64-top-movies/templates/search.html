@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 {% from "bootstrap5/form.html" import render_form %}
 
-{% block title %}Add Movie{% endblock %}
+{% block title %}映画を追加{% endblock %}
 
 {% block content %}
 <div class="content">
-    <h1 class="heading">Search for a Movie</h1>
+    <h1 class="heading">映画を検索</h1>
     {{ render_form(form, novalidate=True) }}
 </div>
 {% endblock %}

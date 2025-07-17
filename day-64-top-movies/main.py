@@ -110,7 +110,7 @@ def login():
             login_user(user)
             return redirect(url_for("movies"))
         else:
-            flash("Invalid email or password")
+            flash("メールアドレスまたはパスワードが正しくありません")
     return render_template("login.html", form=form)
 
 @app.route("/logout")

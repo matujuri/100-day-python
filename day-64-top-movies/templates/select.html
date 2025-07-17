@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 
-{% block title %}Select Movie{% endblock %}
+{% block title %}映画を選択{% endblock %}
 
 {% block content %}
-    <h1 class="heading">Select Movie</h1>
+    <h1 class="heading">映画を選択</h1>
   <p>
     {% if options %}
     {% for option in options %}
@@ -15,7 +15,7 @@
     </p>
     {% endfor %}
     {% else %}
-    <p>No options found</p>
+    <p>検索結果が見つかりませんでした</p>
     {% endif %}
   </p>
 {% endblock %}

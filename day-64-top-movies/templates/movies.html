@@ -1,6 +1,5 @@
-{% extends 'base.html' %} {% block title %}My Top 10 Movies{% endblock %} {%
-block content %}
-{% for movie in movies %}
+{% extends 'base.html' %} {% block title %}私のトップ10映画{% endblock %} {%
+block content %} {% for movie in movies %}
 <div class="card">
   <div class="front" style="background-image: url('{{ movie.img_url }}');">
     <p class="large">{{ movie.ranking }}</p>
@@ -17,11 +16,11 @@ block content %}
       <p class="review">{{ movie.review }}</p>
       <p class="overview">{{ movie.description }}</p>
 
-      <a href="{{ url_for('rate', id=movie.id) }}" class="button">Rate</a>
+      <a href="{{ url_for('rate', id=movie.id) }}" class="button">評価</a>
       <a
         href="{{ url_for('delete', id=movie.id) }}"
         class="button delete-button"
-        >Delete</a
+        >削除</a
       >
     </div>
   </div>

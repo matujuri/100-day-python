@@ -1,12 +1,15 @@
 {% extends "base.html" %} {% block content %}
-<div style="text-align: center">
+<div>
   {% if current_user.is_authenticated %}
-  <h1>Welcome, {{ current_user.name }}!</h1>
-  <a href="{{ url_for('movies') }}" class="btn btn-primary">Go to Movies</a>
+  <h1>{{ current_user.name }}さん、ようこそ！</h1>
+  <a href="{{ url_for('movies') }}" class="btn btn-primary">映画一覧へ</a>
   {% else %}
-  <p>Make your own top movies cards, like this one!</p>
-  <p>The rate and review is decided by you! And we rank the movies by the rate you give.</p>
-  <div class="card" style="width: 300px; height: 500px; margin: 0 auto;">
+  <p>このような映画カードが作れます。あなたが付けた点数で映画をランキングします。</p>
+  <p>
+    他の映画データも検索で簡単に追加できます。
+    <a href="{{ url_for('search') }}" class="btn btn-primary">検索</a>
+  </p>
+  <div class="card" style="width: 300px; height: 500px; margin: 0 auto">
     <div
       class="front"
       style="
@@ -17,25 +20,21 @@
     </div>
     <div class="back">
       <div>
-        <div class="title">{{ movie.title }} <span class="release_date">({{ movie.year }})</span></div>
+        <div class="title">
+          {{ movie.title }} <span class="release_date">({{ movie.year }})</span>
+        </div>
         <div class="rating">
-          <label>点数を入力</label>
+          <label>あなたの点数</label>
           <i class="fas fa-star star"></i>
         </div>
-        <p class="review">
-          コメントを入力
-        </p>
-        <p class="overview">
-          {{ movie.description }}
-        </p>
+        <p class="review">あなたのコメント</p>
+        <p class="overview">{{ movie.description }}</p>
 
-        <a href="#" class="button">Rate</a>
-        <a href="#" class="button delete-button">Delete</a>
+        <a href="#" class="button">評価</a>
+        <a href="#" class="button delete-button">削除</a>
       </div>
     </div>
   </div>
-  <p>The other movie data is added easily by searching. Try to make your own!</p>
-  <a href="{{ url_for('search') }}" class="btn btn-primary">Search</a>
   {% endif %}
 </div>
 {% endblock %}
