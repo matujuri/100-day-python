@@ -4,6 +4,23 @@
   <h1>{{ current_user.name }}さん、ようこそ！</h1>
   <a href="{{ url_for('movies') }}" class="btn btn-primary">映画一覧へ</a>
   {% else %}
+
+  <!-- hero section -->
+  <div class="container pt-3 pb-5">
+    <div class="row">
+        <div class="col">
+        <img src="https://image.tmdb.org/t/p/w500/5lUmWTGkEcYnXujixXn31o9q2T0.jpg" alt="na ta2" class="img-fluid">
+        </div>
+        <div class="col">
+        <img src="https://image.tmdb.org/t/p/w500/ulzhLuWrPK07P1YkdWQLZnQh1JL.jpg" alt="Avengers" class="img-fluid">
+        </div>
+        <div class="col">
+        <img src="https://image.tmdb.org/t/p/w500/ygGmAO60t8GyqUo9xYeYxSZAR3b.jpg" alt="how to train your dragon" class="img-fluid">
+        </div>
+    </div>
+  </div>
+
+  
   <p>このような映画カードが作れます。あなたが付けた点数で映画をランキングします。</p>
   <p>
     他の映画データも検索で簡単に追加できます。
