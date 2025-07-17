@@ -17,7 +17,7 @@ class LoginForm(FlaskForm):
     submit = SubmitField("ログイン")
     
 class RegisterForm(FlaskForm):
+    name = StringField("名前", validators=[DataRequired()])
     email = StringField("メールアドレス", validators=[DataRequired()])
     password = PasswordField("パスワード", validators=[DataRequired()])
-    name = StringField("名前", validators=[DataRequired()])
     submit = SubmitField("登録")

@@ -1,10 +1,10 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %} {% from "bootstrap5/form.html" import render_form %}
+{% block content %}
 <div>
   {% if current_user.is_authenticated %}
   <h1>{{ current_user.name }}さん、ようこそ！</h1>
   <a href="{{ url_for('movies') }}" class="btn btn-primary">映画一覧へ</a>
   {% else %}
-
   <!-- feature section -->
   <section id="feature" style="background-color: #fde9e3; padding: 30px">
     <div class="container">
@@ -185,7 +185,10 @@
     <div class="container" style="padding-top: 40px">
       <h1 style="font-size: 30px; font-weight: bold">
         あなたのリストに、映画を追加しよう！
-        <a href="{{ url_for('register') }}" class="btn btn-primary"
+        <a
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#registerModal"
           >無料で始める</a
         >
       </h1>
@@ -214,6 +217,59 @@
       </div>
     </div>
   </section>
+
+  <!-- login modal -->
+  <div
+    class="modal fade"
+    id="loginModal"
+    tabindex="-1"
+    aria-labelledby="loginModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content rounded-4 shadow">
+        <div class="modal-header p-5 pb-4 border-bottom-0">
+          <h1 class="fw-bold mb-0 fs-2">ログイン</h1>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body p-5 pt-0">
+          {{ render_form(login_form, action=url_for('login'), method="POST") }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- register modal -->
+  <div
+    class="modal fade"
+    id="registerModal"
+    tabindex="-1"
+    aria-labelledby="registerModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content rounded-4 shadow">
+        <div class="modal-header p-5 pb-4 border-bottom-0">
+          <h1 class="fw-bold mb-0 fs-2">登録</h1>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body p-5 pt-0">
+          {{ render_form(register_form, action=url_for('register'),
+          method="POST") }}
+        </div>
+      </div>
+    </div>
+  </div>
 
   {% endif %}
 </div>
