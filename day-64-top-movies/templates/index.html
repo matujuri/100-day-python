@@ -6,36 +6,123 @@
   {% else %}
 
   <!-- feature section -->
-  <section id="feature" style="background-color: #f0f0f0; padding: 30px;">
+  <section id="feature" style="background-color: #fde9e3; padding: 30px">
     <div class="container">
       <div class="row flex-lg-row-reverse align-items-center g-5 pt-5">
         <div class="col-10 col-sm-8 col-lg-6" style="margin: 0 auto">
-          <div class="card" style="width: 400px; height: 600px; margin: 0 auto">
-            <div
-              class="front"
-              style="
+          <div id="carouselExample" class="carousel slide">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            </div>
+            <div class="carousel-inner">
+              <div class="carousel-item active">
+                <div
+                  class="card"
+                  style="width: 400px; height: 600px; margin: 0 auto"
+                >
+                  <div
+                    class="front"
+                    style="
                 background-image: url('{{ movie.img_url }}');
               "
-            >
-              <p class="large">1</p>
-            </div>
-            <div class="back">
-              <div>
-                <div class="title">
-                  {{ movie.title }}
-                  <span class="release_date">({{ movie.year }})</span>
-                </div>
-                <div class="rating">
-                  <label>あなたの点数</label>
-                  <i class="fas fa-star star"></i>
-                </div>
-                <p class="review">あなたのコメント</p>
-                <p class="overview">{{ movie.description }}</p>
+                  >
+                    <p class="large">1</p>
+                  </div>
+                  <div class="back">
+                    <div>
+                      <div class="title">
+                        {{ movie.title }}
+                        <span class="release_date">({{ movie.year }})</span>
+                      </div>
+                      <div class="rating">
+                        <label>あなたの点数</label>
+                        <i class="fas fa-star star"></i>
+                      </div>
+                      <p class="review">あなたのコメント</p>
+                      <p class="overview">{{ movie.description }}</p>
 
-                <a href="#" class="button">評価</a>
-                <a href="#" class="button delete-button">削除</a>
+                      <a href="#" class="button">評価</a>
+                      <a href="#" class="button delete-button">削除</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <div
+                  class="card"
+                  style="width: 400px; height: 600px; margin: 0 auto"
+                >
+                  <div
+                    class="front"
+                    style="
+                background-image: url('https://image.tmdb.org/t/p/w500/e5lkke4fKEZNfl28gCOe6MrAjhA.jpg');
+              "
+                  >
+                    <p class="large">1</p>
+                  </div>
+                  <div class="back">
+                    <div>
+                      <div class="title">
+                        Love Letter
+                        <span class="release_date">(1995)</span>
+                      </div>
+                      <div class="rating">
+                        <label>あなたの点数</label>
+                        <i class="fas fa-star star"></i>
+                      </div>
+                      <p class="review">あなたのコメント</p>
+                      <p class="overview">Hiroko attends the memorial service of her fiancé, Itsuki Fujii, who died in a mountain-climbing incident. Although Itsuki's mother says that their old house is gone, Hiroko records the address listed under his name in his yearbook and sends him a letter. Surprisingly, she receives a reply, and discovers it came from his old classmate, a girl who also happens to be called Itsuki Fujii.</p>
+
+                      <a href="#" class="button">評価</a>
+                      <a href="#" class="button delete-button">削除</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <div
+                  class="card"
+                  style="width: 400px; height: 600px; margin: 0 auto"
+                >
+                  <div
+                    class="front"
+                    style="
+                background-image: url('https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg');
+              "
+                  >
+                    <p class="large">1</p>
+                  </div>
+                  <div class="back">
+                    <div>
+                      <div class="title">
+                        The Dark Knight
+                        <span class="release_date">(2008)</span>
+                      </div>
+                      <div class="rating">
+                        <label>あなたの点数</label>
+                        <i class="fas fa-star star"></i>
+                      </div>
+                      <p class="review">あなたのコメント</p>
+                      <p class="overview">Batman raises the stakes in his war on crime. With the help of Lt. Jim Gordon and District Attorney Harvey Dent, Batman sets out to dismantle the remaining criminal organizations that plague the streets. The partnership proves to be effective, but they soon find themselves prey to a reign of chaos unleashed by a rising criminal mastermind known to the terrified citizens of Gotham as the Joker.</p>
+
+                      <a href="#" class="button">評価</a>
+                      <a href="#" class="button delete-button">削除</a>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
+            <button
+              class="carousel-control-next btn"
+              type="button"
+              data-bs-target="#carouselExample"
+              data-bs-slide="next"
+            >
+              <span class="visually-hidden">Next</span>
+              <p style="color: black;">→</p>
+            </button>
           </div>
         </div>
         <div class="col-lg-6">
@@ -48,11 +135,10 @@
             <li>視覚でわかる！オリジナル映画カードも作成</li>
           </ul>
           <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-            <span
-              style="font-size: 30px; font-weight: bold"
-              >まずは、気になる映画を🔍
+            <span style="font-size: 30px; font-weight: bold"
+              >まずは、ゲストで映画カードを
             </span>
-            <a href="{{ url_for('search') }}" class="btn btn-primary">検索</a>
+            <a href="{{ url_for('search') }}" class="btn btn-primary">作成</a>
           </div>
         </div>
       </div>
@@ -61,36 +147,37 @@
 
   <!-- hero section -->
   <section id="hero">
-  <div class="container" style="padding: 40px;">
-    <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3">
-      あなたのリストのために、映画を追加しよう！
-    </h1>
-    <div class="row">
-      <div class="col">
-        <img
-          src="https://image.tmdb.org/t/p/w500/5lUmWTGkEcYnXujixXn31o9q2T0.jpg"
-          alt="na ta2"
-          class="img-fluid"
-        />
-      </div>
-      <div class="col">
-        <img
-          src="https://image.tmdb.org/t/p/w500/ulzhLuWrPK07P1YkdWQLZnQh1JL.jpg"
-          alt="Avengers"
-          class="img-fluid"
-        />
-      </div>
-      <div class="col">
-        <img
-          src="https://image.tmdb.org/t/p/w500/ygGmAO60t8GyqUo9xYeYxSZAR3b.jpg"
-          alt="how to train your dragon"
-          class="img-fluid"
-        />
+    <div class="container" style="padding: 40px">
+      <h1 style="font-size: 30px; font-weight: bold;">
+        あなたのリストのために、映画を追加しよう！
+        <a href="{{ url_for('register') }}" class="btn btn-primary">無料で始める</a>
+      </h1>
+      <div class="row">
+        <div class="col">
+          <img
+            src="https://image.tmdb.org/t/p/w500/5lUmWTGkEcYnXujixXn31o9q2T0.jpg"
+            alt="na ta2"
+            class="img-fluid"
+          />
+        </div>
+        <div class="col">
+          <img
+            src="https://image.tmdb.org/t/p/w500/ulzhLuWrPK07P1YkdWQLZnQh1JL.jpg"
+            alt="Avengers"
+            class="img-fluid"
+          />
+        </div>
+        <div class="col">
+          <img
+            src="https://image.tmdb.org/t/p/w500/ygGmAO60t8GyqUo9xYeYxSZAR3b.jpg"
+            alt="how to train your dragon"
+            class="img-fluid"
+          />
+        </div>
       </div>
     </div>
-  </div>
   </section>
-  
+
   {% endif %}
 </div>
 {% endblock %}
