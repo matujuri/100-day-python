@@ -8,7 +8,7 @@ from forms import RateForm, SearchForm, LoginForm, RegisterForm
 import os
 from dotenv import load_dotenv
 import json
-from flask_login import LoginManager, UserMixin, login_user, logout_user, current_user
+from flask_login import LoginManager, UserMixin, login_user, logout_user, current_user, login_required
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask import flash
 
@@ -67,14 +67,13 @@ def update_ranking():
     データベース内の映画のランキングを更新します。
     映画を評価の高い順に並べ替え、1位から順にランキングを割り当てます。
     """
-    movies = db.session.execute(db.select(Movie).order_by(Movie.rating.desc())).scalars()
+    movies = db.session.execute(db.select(Movie).where(Movie.user_id == current_user.id).order_by(Movie.rating.desc())).scalars()
     for i, movie in enumerate(movies):
         movie.ranking = i + 1
     db.session.commit()
     
 with app.app_context():
     db.create_all()
-    update_ranking()
 
 @app.route("/")
 def home():
@@ -112,6 +111,7 @@ def logout():
     return redirect(url_for("home"))
 
 @app.route("/movies")
+@login_required
 def movies():
     """
     ホームページを表示します。
@@ -121,6 +121,7 @@ def movies():
     return render_template("movies.html", movies=movies)
 
 @app.route("/rate", methods=["GET", "POST"])
+@login_required
 def rate():
     """
     映画の評価とレビューを更新するページを表示・処理します。
@@ -136,13 +137,14 @@ def rate():
         movie_to_update.review = request.form["review"]
         db.session.commit()
         update_ranking()
-        return redirect(url_for("home"))
+        return redirect(url_for("movies"))
     movie_title = movie_to_update.title
     form.rating.data = movie_to_update.rating
     form.review.data = movie_to_update.review
     return render_template("rate.html", form=form, title=movie_title)
 
 @app.route("/delete")
+@login_required
 def delete():
     """
     映画をデータベースから削除します。
@@ -153,13 +155,14 @@ def delete():
     db.session.delete(movie_to_delete)
     db.session.commit()
     update_ranking()
-    return redirect(url_for("home"))
+    return redirect(url_for("movies"))
 
 def _filter_saved_movies(search_results, saved_movies):
         saved_titles = {movie.title for movie in saved_movies}
         return [item for item in search_results if item["title"] not in saved_titles]
 
 @app.route("/search", methods=["GET", "POST"])
+@login_required
 def search():
     """
     映画を検索し、検索結果を表示します。
@@ -180,7 +183,7 @@ def search():
         response.raise_for_status()
         data = response.json()["results"]
         
-        saved_movies = db.session.execute(db.select(Movie).order_by(Movie.ranking.desc())).scalars()
+        saved_movies = db.session.execute(db.select(Movie).where(Movie.user_id == current_user.id).order_by(Movie.ranking.desc())).scalars()
         filtered_data = _filter_saved_movies(data, saved_movies)
         
         popularity_sorted_data=sorted(filtered_data, key=lambda x: x["popularity"] if x.get("popularity") else 0, reverse=True)[:10]
@@ -189,6 +192,7 @@ def search():
     return render_template("search.html", form=form)
 
 @app.route("/add")
+@login_required
 def add():
     """
     選択された映画をデータベースに追加します。
