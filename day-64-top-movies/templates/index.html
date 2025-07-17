@@ -1,32 +1,11 @@
-{% extends 'base.html' %}
-
-{% block title %}My Top 10 Movies{% endblock %}
+{% extends "base.html" %}
 
 {% block content %}
-  <a href="{{ url_for('search') }}" class="button small">Add Movie</a>
-  <p class="description">These are my all-time favourite movies.</p>
-  {% for movie in movies %}
-  <div class="card" >
-    <div class="front" style="background-image: url('{{ movie.img_url }}');">
-        <p class="large">{{ movie.ranking }}</p>
-    </div>
-    <div class="back">
-      <div>
-    <div class="title">{{ movie.title }} <span class="release_date">({{ movie.year }})</span></div>
-        <div class="rating">
-            <label>{{ movie.rating }}</label>
-          <i class="fas fa-star star"></i>
-        </div>
-          <p class="review">{{ movie.review }}</p>
-        <p class="overview">
-            {{ movie.description }}
-        </p>
-
-        <a href="{{ url_for('rate', id=movie.id) }}" class="button">Rate</a>
-        <a href="{{ url_for('delete', id=movie.id) }}" class="button delete-button">Delete</a>
-
-        </div>
-      </div>
-    </div>
-  {% endfor %}
+{% if current_user.is_authenticated %}
+<a href="{{ url_for('movies') }}" class="btn btn-primary">Go to Movies</a>
+{% else %}
+<p>login or register to record and rate your favorite movies</p>
+<a href="{{ url_for('login') }}" class="btn btn-primary">Login</a>
+<a href="{{ url_for('register') }}" class="btn btn-primary">Register</a>
+{% endif %}
 {% endblock %}

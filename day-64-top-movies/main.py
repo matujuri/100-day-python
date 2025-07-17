@@ -78,12 +78,7 @@ with app.app_context():
 
 @app.route("/")
 def home():
-    """
-    ホームページを表示します。
-    データベースから映画をランキング順に取得し、テンプレートに渡して表示します。
-    """
-    movies = db.session.execute(db.select(Movie).order_by(Movie.ranking.desc())).scalars()
-    return render_template("index.html", movies=movies)
+    return render_template("index.html")
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -106,7 +101,7 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user and check_password_hash(user.password, form.password.data or ""):
             login_user(user)
-            return redirect(url_for("home"))
+            return redirect(url_for("movies"))
         else:
             flash("Invalid email or password")
     return render_template("login.html", form=form)
@@ -115,6 +110,15 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for("home"))
+
+@app.route("/movies")
+def movies():
+    """
+    ホームページを表示します。
+    データベースから映画をランキング順に取得し、テンプレートに渡して表示します。
+    """
+    movies = db.session.execute(db.select(Movie).where(Movie.user_id == current_user.id).order_by(Movie.ranking.desc())).scalars()
+    return render_template("movies.html", movies=movies)
 
 @app.route("/rate", methods=["GET", "POST"])
 def rate():
