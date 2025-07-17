@@ -1,14 +1,16 @@
 from flask import Flask, render_template, redirect, url_for, request
 from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-from sqlalchemy import Integer, String, Float
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy import Integer, String, Float, ForeignKey
 import requests
-from rate_form import RateForm
-from search_form import SearchForm
+from forms import RateForm, SearchForm, LoginForm, RegisterForm
 import os
 from dotenv import load_dotenv
 import json
+from flask_login import LoginManager, UserMixin, login_user, logout_user, current_user
+from werkzeug.security import check_password_hash, generate_password_hash
+from flask import flash
 
 load_dotenv()
 TMDB_API_TOKEN = os.getenv("TMDB_API_TOKEN")
@@ -17,6 +19,12 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
 app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{os.path.join(os.path.dirname(__file__), 'movies.db')}"
 Bootstrap5(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 # CREATE DB
 class Base(DeclarativeBase):
@@ -43,6 +51,16 @@ class Movie(db.Model):
     ranking: Mapped[int] = mapped_column(Integer, nullable=False)
     review: Mapped[str] = mapped_column(String, nullable=False)
     img_url: Mapped[str] = mapped_column(String, nullable=False)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"))
+    user: Mapped["User"] = relationship(back_populates="movies")
+    
+class User(UserMixin, db.Model):
+    __tablename__ = "users"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    email: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
+    password: Mapped[str] = mapped_column(String(100), nullable=False)
+    name: Mapped[str] = mapped_column(String(100), nullable=False)
+    movies = relationship("Movie", back_populates="user")
 
 def update_ranking():
     """
@@ -66,6 +84,37 @@ def home():
     """
     movies = db.session.execute(db.select(Movie).order_by(Movie.ranking.desc())).scalars()
     return render_template("index.html", movies=movies)
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    form = RegisterForm()
+    if form.validate_on_submit():
+        new_user = User(
+            email=form.email.data,
+            password=generate_password_hash(form.password.data or "", method="pbkdf2:sha256", salt_length=8),
+            name=form.name.data)
+        db.session.add(new_user)
+        db.session.commit()
+        login_user(new_user)
+        return redirect(url_for("home"))
+    return render_template("register.html", form=form)
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user and check_password_hash(user.password, form.password.data or ""):
+            login_user(user)
+            return redirect(url_for("home"))
+        else:
+            flash("Invalid email or password")
+    return render_template("login.html", form=form)
+
+@app.route("/logout")
+def logout():
+    logout_user()
+    return redirect(url_for("home"))
 
 @app.route("/rate", methods=["GET", "POST"])
 def rate():
@@ -151,6 +200,7 @@ def add():
     movie.rating = 0.0
     movie.ranking = 0
     movie.review = ""
+    movie.user_id = current_user.id
     db.session.add(movie)
     db.session.commit()
     update_ranking()

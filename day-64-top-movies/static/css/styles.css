@@ -44,9 +44,6 @@ p.overview {
   padding-bottom: 0.5em;
   margin-bottom: 1rem;
   position: relative;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 }
  .heading:after {
 	 display: block;

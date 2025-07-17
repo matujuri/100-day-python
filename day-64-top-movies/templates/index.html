@@ -3,10 +3,7 @@
 {% block title %}My Top 10 Movies{% endblock %}
 
 {% block content %}
-  <h1 class="heading">
-    My Top 10 Movies
-    <a href="{{ url_for('search') }}" class="button small">Add Movie</a>
-  </h1>
+  <a href="{{ url_for('search') }}" class="button small">Add Movie</a>
   <p class="description">These are my all-time favourite movies.</p>
   {% for movie in movies %}
   <div class="card" >

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% from "bootstrap5/form.html" import render_form %}
+
+{% block content %}
+<div class="container">
+    <h1>Login</h1>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <p class="alert alert-danger">{{ messages[0] }}</p>
+        {% endif %}
+    {% endwith %}
+    {{ render_form(form) }}
+</div>
+{% endblock %}
