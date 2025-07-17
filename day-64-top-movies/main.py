@@ -221,15 +221,14 @@ def add():
     update_ranking()
     return redirect(url_for("rate", id=movie.id))
 
-@app.route("/make_card_for_example")
+@app.route("/make_card_for_example", methods=["POST"])
 def make_card_for_example():
-    selected_data = json.loads(request.args.get("selected") or "{}")
+    selected_data = json.loads(request.form.get("selected") or "{}")
     movie = Movie()
     movie.title = selected_data.get("title")
     movie.year = int(selected_data.get("release_date", "").split("-")[0]) if selected_data.get("release_date") else 0
     movie.description = selected_data.get("overview")
     movie.img_url = f"https://image.tmdb.org/t/p/w500{selected_data.get('poster_path')}" if selected_data.get('poster_path') else ""
-    print(movie.title)
     return render_template("index.html", movie=movie)
 
 if __name__ == '__main__':
