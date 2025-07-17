@@ -201,35 +201,22 @@ def search():
         return render_template("select.html", options=release_date_sorted_data)
     return render_template("search.html", form=form)
 
-@app.route("/add")
-@login_required
-def add():
-    """
-    選択された映画をデータベースに追加します。
-    The Movie Database APIから取得した映画情報を使用して新しいMovieオブジェクトを作成し、
-    データベースに保存後、ランキングを再計算し、評価ページにリダイレクトします。
-    """
-    selected_data = json.loads(request.args.get("selected") or "{}")
-    movie = Movie()
-    movie.title = selected_data.get("title")
-    movie.year = int(selected_data.get("release_date", "").split("-")[0]) if selected_data.get("release_date") else 0
-    movie.description = selected_data.get("overview")
-    movie.img_url = f"https://image.tmdb.org/t/p/w500{selected_data.get('poster_path')}" if selected_data.get('poster_path') else ""
-    movie.user_id = current_user.id
-    db.session.add(movie)
-    db.session.commit()
-    update_ranking()
-    return redirect(url_for("rate", id=movie.id))
-
-@app.route("/make_card_for_example", methods=["POST"])
-def make_card_for_example():
+@app.route("/", methods=["POST"])
+def create_card():
     selected_data = json.loads(request.form.get("selected") or "{}")
     movie = Movie()
     movie.title = selected_data.get("title")
     movie.year = int(selected_data.get("release_date", "").split("-")[0]) if selected_data.get("release_date") else 0
     movie.description = selected_data.get("overview")
     movie.img_url = f"https://image.tmdb.org/t/p/w500{selected_data.get('poster_path')}" if selected_data.get('poster_path') else ""
-    return render_template("index.html", movie=movie)
+    if current_user.is_authenticated:
+        movie.user_id = current_user.id
+        db.session.add(movie)
+        db.session.commit()
+        update_ranking()
+        return redirect(url_for("rate", id=movie.id))
+    else:
+        return render_template("index.html", movie=movie)
 
 if __name__ == '__main__':
     app.run(debug=True)

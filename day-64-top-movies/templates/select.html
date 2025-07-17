@@ -8,14 +8,10 @@
     {% if options %}
     {% for option in options %}
     <p>
-      {% if current_user.is_authenticated %}
-      <a href="{{ url_for('add', selected=option|tojson) }}"> {{ option.title }} - {{ option.release_date }}</a>
-      {% else %}
-      <form action="{{ url_for('make_card_for_example') }}" method="POST">
+      <form action="{{ url_for('create_card') }}" method="POST">
         <input type="hidden" id="selected" name="selected" value='{{ option|tojson }}'>
         <button type="submit">{{ option.title }} - {{ option.release_date }}</button>
-    </form>
-      {% endif %}
+      </form>
     </p>
     {% endfor %}
     {% else %}
