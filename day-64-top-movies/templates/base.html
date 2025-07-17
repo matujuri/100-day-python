@@ -36,8 +36,8 @@
   </head>
   <body>
     <!-- Navigation-->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark" id="mainNav">
-      <div class="container px-4 px-lg-5">
+    <nav class="navbar navbar-expand-sm bg-light" id="mainNav">
+      <div class="container">
         <a class="navbar-brand" href="/">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -56,7 +56,7 @@
               vertical-align: middle;
               font-size: 20px;
               font-weight: bold;
-              color: white;
+              color: black;
             "
             >トップ映画</span
           >
@@ -78,14 +78,14 @@
             {% if not current_user.is_authenticated: %}
             <li class="nav-item">
               <a
-                class="nav-link px-lg-3 py-3 py-lg-4"
+                class="nav-link"
                 href="{{ url_for('login') }}"
                 >ログイン</a
               >
             </li>
             <li class="nav-item">
               <a
-                class="nav-link px-lg-3 py-3 py-lg-4"
+                class="nav-link"
                 href="{{ url_for('register') }}"
                 >登録</a
               >
