@@ -1,5 +1,7 @@
-{% extends 'base.html' %} {% block title %}私のトップ10映画{% endblock %} {%
-block content %}
+{% extends 'base.html' %}
+{% from "bootstrap5/form.html" import render_form %}
+{% block title %}私のトップ10映画{% endblock %}
+{% block content %}
 <div class="container">
   {% if movies|length > 0 %} {% for movie in movies %}
   <div class="card">
@@ -31,8 +33,34 @@ block content %}
   <p>自分の映画リストを作りましょう。右下の＋ボタンをクリックしてください。</p>
   {% endif %}
   <!-- 右下に浮かぶ＋ボタン -->
-  <a href="{{ url_for('search') }}" class="floating-add-button"
+  <a data-bs-toggle="modal" data-bs-target="#searchModal" class="floating-add-button"
     ><i class="fas fa-plus"></i
   ></a>
 </div>
+
+  <!-- login modal -->
+  <div
+    class="modal fade"
+    id="searchModal"
+    tabindex="-1"
+    aria-labelledby="searchModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content rounded-4 shadow">
+        <div class="modal-header p-5 pb-4 border-bottom-0">
+          <h1 class="fw-bold mb-0 fs-2">映画を検索する</h1>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body p-5 pt-0">
+          {{ render_form(search_form, action=url_for('search'), method="POST") }}
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}

@@ -87,7 +87,7 @@ def home():
         movie.img_url = "https://image.tmdb.org/t/p/w500/BzVjmm8l23rPsijLiNLUzuQtyd.jpg"
         return render_template("index.html", movie=movie, login_form=LoginForm(), register_form=RegisterForm())
 
-@app.route("/register", methods=["GET", "POST"])
+@app.route("/register", methods=["POST"])
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
@@ -99,9 +99,9 @@ def register():
         db.session.commit()
         login_user(new_user)
         return redirect(url_for("movies"))
-    return render_template("register.html", form=form)
+    return redirect(url_for("home"))
 
-@app.route("/login", methods=["GET", "POST"])
+@app.route("/login", methods=["POST"])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
@@ -111,7 +111,7 @@ def login():
             return redirect(url_for("movies"))
         else:
             flash("メールアドレスまたはパスワードが正しくありません")
-    return render_template("login.html", form=form)
+    return redirect(url_for("home"))
 
 @app.route("/logout")
 def logout():
@@ -126,7 +126,7 @@ def movies():
     データベースから映画をランキング順に取得し、テンプレートに渡して表示します。
     """
     movies = db.session.execute(db.select(Movie).where(Movie.user_id == current_user.id).order_by(Movie.ranking.desc())).scalars().all()
-    return render_template("movies.html", movies=movies)
+    return render_template("movies.html", movies=movies, search_form=SearchForm())
 
 @app.route("/rate", methods=["GET", "POST"])
 @login_required
@@ -169,7 +169,7 @@ def _filter_saved_movies(search_results, saved_movies):
         saved_titles = {movie.title for movie in saved_movies}
         return [item for item in search_results if item["title"] not in saved_titles]
 
-@app.route("/search", methods=["GET", "POST"])
+@app.route("/search", methods=["POST"])
 def search():
     """
     映画を検索し、検索結果を表示します。
@@ -178,7 +178,7 @@ def search():
     GETリクエストでは、検索フォームを表示します。
     """
     form = SearchForm()
-    if request.method == "POST" and form.validate_on_submit():
+    if form.validate_on_submit():
         title = request.form["title"]
         headers = {
             "Authorization": f"Bearer {TMDB_API_TOKEN}"
@@ -199,7 +199,7 @@ def search():
         popularity_sorted_data=sorted(filtered_data, key=lambda x: x["popularity"] if x.get("popularity") else 0, reverse=True)[:10]
         release_date_sorted_data = sorted(popularity_sorted_data, key=lambda x: x["release_date"])
         return render_template("select.html", options=release_date_sorted_data)
-    return render_template("search.html", form=form)
+    return redirect(url_for("home"))
 
 @app.route("/", methods=["POST"])
 def create_card():
