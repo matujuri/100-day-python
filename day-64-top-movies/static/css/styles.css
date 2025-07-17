@@ -238,7 +238,7 @@ p.overview {
 /* 右下に浮かぶ＋ボタン */
 .floating-add-button {
   position: fixed;
-  right: 32px;
+  right: 100px;
   bottom: 100px;
   width: 60px;
   height: 60px;
