@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div style="text-align: center;">
 {% if current_user.is_authenticated %}
 <h1>Welcome, {{ current_user.name }}!</h1>
 <a href="{{ url_for('movies') }}" class="btn btn-primary">Go to Movies</a>
@@ -9,4 +10,5 @@
 <a href="{{ url_for('login') }}" class="btn btn-primary">Login</a>
 <a href="{{ url_for('register') }}" class="btn btn-primary">Register</a>
 {% endif %}
+</div>
 {% endblock %}

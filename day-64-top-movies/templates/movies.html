@@ -1,6 +1,5 @@
 {% extends 'base.html' %} {% block title %}My Top 10 Movies{% endblock %} {%
 block content %}
-<p class="description">These are my all-time favourite movies.</p>
 {% for movie in movies %}
 <div class="card">
   <div class="front" style="background-image: url('{{ movie.img_url }}');">
