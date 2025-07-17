@@ -1,5 +1,7 @@
-*, *:before, *:after {
-	 box-sizing: border-box;
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
 }
 html {
   font-size: 18px;
@@ -45,14 +47,14 @@ p.overview {
   margin-bottom: 1rem;
   position: relative;
 }
- .heading:after {
-	 display: block;
-	 content: '';
-	 position: absolute;
-	 width: 60px;
-	 height: 4px;
-	 background: linear-gradient(135deg, #1a9be6, #1a57e6);
-	 bottom: 0;
+.heading:after {
+  display: block;
+  content: "";
+  position: absolute;
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(135deg, #1a9be6, #1a57e6);
+  bottom: 0;
 }
 .description {
   width: 100%;
@@ -81,21 +83,22 @@ p.overview {
     width: 100%;
   }
 }
- .front, .back {
-	 display: flex;
-	 border-radius: 6px;
-	 background-position: center;
-	 background-size: cover;
-	 text-align: center;
-	 justify-content: center;
-	 align-items: center;
-	 position: absolute;
-	 height: 100%;
-	 width: 100%;
-	 -webkit-backface-visibility: hidden;
-	 backface-visibility: hidden;
-	 transform-style: preserve-3d;
-	 transition: ease-in-out 600ms;
+.front,
+.back {
+  display: flex;
+  border-radius: 6px;
+  background-position: center;
+  background-size: cover;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+  transition: ease-in-out 600ms;
 }
 .front {
   background-size: cover;
@@ -106,17 +109,17 @@ p.overview {
   overflow: hidden;
   font-family: Poppins, sans-serif;
 }
- .front:before {
-	 position: absolute;
-	 display: block;
-	 content: '';
-	 top: 0;
-	 left: 0;
-	 right: 0;
-	 bottom: 0;
-	 background: linear-gradient(135deg, #1a9be6, #1a57e6);
-	 opacity: 0.25;
-	 z-index: -1;
+.front:before {
+  position: absolute;
+  display: block;
+  content: "";
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #1a9be6, #1a57e6);
+  opacity: 0.25;
+  z-index: -1;
 }
 .card:hover .front {
   transform: rotateY(180deg);
@@ -154,21 +157,21 @@ p.overview {
   transform-style: preserve-3d;
   transition: 300ms ease;
 }
- .button:before {
-	 transition: 300ms ease;
-	 position: absolute;
-	 display: block;
-	 content: '';
-	 transform: translateZ(-40px);
-	 -webkit-backface-visibility: hidden;
-	 backface-visibility: hidden;
-	 height: calc(100% - 20px);
-	 width: calc(100% - 20px);
-	 border-radius: 100px;
-	 left: 10px;
-	 top: 16px;
-	 box-shadow: 0 0 10px 10px rgba(26, 87, 230, 0.25);
-	 background-color: rgba(26, 87, 230, 0.25);
+.button:before {
+  transition: 300ms ease;
+  position: absolute;
+  display: block;
+  content: "";
+  transform: translateZ(-40px);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  height: calc(100% - 20px);
+  width: calc(100% - 20px);
+  border-radius: 100px;
+  left: 10px;
+  top: 16px;
+  box-shadow: 0 0 10px 10px rgba(26, 87, 230, 0.25);
+  background-color: rgba(26, 87, 230, 0.25);
 }
 
 .button.small {
@@ -203,7 +206,7 @@ p.overview {
   margin-bottom: 20px;
 }
 .rating {
-    color: #E4BB23;
+  color: #e4bb23;
 }
 .review {
   font-style: italic;
@@ -216,4 +219,29 @@ p.overview {
 }
 .release_date {
   font-weight: normal;
+}
+
+/* 右下に浮かぶ＋ボタン */
+.floating-add-button {
+  position: fixed;
+  right: 32px;
+  bottom: 32px;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #1a9be6, #1a57e6);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  box-shadow: 0 4px 16px rgba(26, 87, 230, 0.2);
+  z-index: 1000;
+  transition: box-shadow 0.2s, background 0.2s;
+  text-decoration: none;
+}
+.floating-add-button:hover {
+  box-shadow: 0 8px 24px rgba(26, 87, 230, 0.3);
+  background: linear-gradient(135deg, #1a57e6, #1a9be6);
+  color: #fff;
 }
