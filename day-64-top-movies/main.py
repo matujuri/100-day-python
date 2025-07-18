@@ -198,7 +198,7 @@ def search():
         
         popularity_sorted_data=sorted(filtered_data, key=lambda x: x["popularity"] if x.get("popularity") else 0, reverse=True)[:10]
         release_date_sorted_data = sorted(popularity_sorted_data, key=lambda x: x["release_date"])
-        return render_template("select.html", options=release_date_sorted_data)
+        return render_template("select.html", options=release_date_sorted_data, keyword=title)
     return redirect(url_for("home"))
 
 @app.route("/", methods=["POST"])
