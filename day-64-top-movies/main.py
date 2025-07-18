@@ -85,7 +85,7 @@ def home():
         movie.year = 2021
         movie.description = "As a CODA (Child of Deaf Adults), Ruby is the only hearing person in her deaf family. When the family's fishing business is threatened, Ruby finds herself torn between pursuing her love of music and her fear of abandoning her parents."
         movie.img_url = "https://image.tmdb.org/t/p/w500/BzVjmm8l23rPsijLiNLUzuQtyd.jpg"
-        return render_template("index.html", movie=movie, login_form=LoginForm(), register_form=RegisterForm())
+        return render_template("index.html", movie=movie, login_form=LoginForm(), register_form=RegisterForm(), search_form=SearchForm())
 
 @app.route("/register", methods=["POST"])
 def register():
@@ -216,7 +216,7 @@ def create_card():
         update_ranking()
         return redirect(url_for("rate", id=movie.id))
     else:
-        return render_template("index.html", movie=movie, login_form=LoginForm(), register_form=RegisterForm())
+        return render_template("index.html", movie=movie, login_form=LoginForm(), register_form=RegisterForm(), search_form=SearchForm())
 
 if __name__ == '__main__':
     app.run(debug=True)
